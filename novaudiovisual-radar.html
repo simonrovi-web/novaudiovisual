@@ -126,6 +126,8 @@
       <button class="chip on" data-tab="ops"><i data-lucide="radar" class="icon"></i>Oportunidades</button>
       <button class="chip" data-tab="cal"><i data-lucide="calendar-days" class="icon"></i>Calendario</button>
       <button class="chip" data-tab="post"><i data-lucide="send" class="icon"></i>Postulaciones</button>
+      <button class="chip" data-tab="ordenes"><i data-lucide="receipt" class="icon"></i>Órdenes</button>
+      <button class="chip" data-tab="clientes"><i data-lucide="contact" class="icon"></i>Clientes</button>
       <button class="chip" data-tab="precios"><i data-lucide="badge-dollar-sign" class="icon"></i>Precios</button>
       <button class="chip" data-tab="mercado"><i data-lucide="users" class="icon"></i>Mercado</button>
       <button class="chip" data-tab="empresa"><i data-lucide="building-2" class="icon"></i>Mi empresa</button>
@@ -145,12 +147,33 @@
         <button class="btn btn-ghost" id="ics"><i data-lucide="calendar-plus" class="icon"></i>Exportar lo que sigo (.ics)</button>
       </div>
       <div class="cal" id="cal"></div>
+      <h3 style="margin:26px 0 10px">Temporadas que vienen</h3>
+      <div class="cal" id="temporadas"></div>
     </section>
 
     <section data-panel="post" hidden>
       <div class="stats" id="pstats"></div>
       <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Lo que preparaste con 🚀 Postular. Marca las que enviaste y con qué monto neto: cuando se resuelvan, el radar te avisa si ganaste o quién ganó y por cuánto.</p>
       <div class="grid" id="paqs"></div>
+    </section>
+
+    <section data-panel="ordenes" hidden>
+      <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px" id="ordenesNota"></p>
+      <div class="grid" id="ocs"></div>
+    </section>
+
+    <section data-panel="clientes" hidden>
+      <div class="bar">
+        <p style="margin:0;color:var(--tx2);font-size:14px;max-width:720px">Organismos que compran audiovisual, con los contactos que aparecen en sus licitaciones. El correo de presentación lo redacta la IA; tú lo revisas y lo envías.</p>
+        <input id="qCli" type="search" placeholder="Buscar organismo o región" />
+      </div>
+      <div class="glass" id="correoBox" hidden style="padding:18px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px">
+        <b id="correoPara"></b>
+        <input id="correoAsunto" />
+        <textarea id="correoCuerpo" rows="10"></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-main" id="correoCopiar"><i data-lucide="copy" class="icon"></i>Copiar</button><a class="btn btn-ghost" id="correoMail" href="#"><i data-lucide="mail" class="icon"></i>Abrir en mi correo</a><button class="btn btn-ghost" id="correoCerrar">Cerrar</button></div>
+      </div>
+      <div class="glass tbl"><table><thead><tr><th>Organismo</th><th>Compras</th><th>Mediana</th><th>Contactos</th><th></th></tr></thead><tbody id="cli"></tbody></table></div>
     </section>
 
     <section data-panel="mercado" hidden>
@@ -173,6 +196,8 @@
     <section data-panel="empresa" hidden>
       <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Los borradores en Word usan solo estos datos: lo que dejes vacío aparece en amarillo como [COMPLETAR]. Con tarifas, la oferta económica sale con precios sugeridos. Ejemplo de tarifas: <i>Jornada de cámara con equipo $180.000 · Streaming multicámara (3 cámaras, 4 h) $650.000 · Edición por minuto final $25.000 · Fotografía de evento (4 h, 60 fotos) $150.000</i>.</p>
       <form class="glass form" id="prefs" style="margin-bottom:16px"></form>
+      <form class="glass form" id="docs" style="margin-bottom:16px"></form>
+      <form class="glass form" id="vitrina" style="margin-bottom:16px"></form>
       <form class="glass form" id="perfil"></form>
     </section>
 
@@ -248,7 +273,8 @@
       [semana.length, 'encontradas en 7 días'],
       [D.hist.length, 'precios en el historial'],
     ].map(([n,t]) => `<div class="glass kpi"><div class="n">${n}</div><div class="t">${t}</div></div>`).join('');
-    pintarOps(); pintarCal(); pintarPost(); pintarPrecios(); pintarMercado(); pintarPrefs(); pintarPerfil();
+    pintarOps(); pintarCal(); pintarTemporadas(); pintarPost(); pintarOrdenes(); pintarClientes(); pintarPrecios(); pintarMercado();
+    pintarPrefs(); pintarDocs(); pintarVitrina(); pintarPerfil();
     const m = D.meta || {};
     const run = (x, t) => x ? `${t}: ${new Date(x.fecha).toLocaleString('es-CL')} · revisadas ${x.revisadas ?? x.total} · avisadas ${x.avisadas ?? x.agregados}` : `${t}: sin corridas aún`;
     const pc = m.pc ? `💻 Tu PC (Compra Ágil): último envío ${new Date(m.pc.fecha).toLocaleString('es-CL')}` : '💻 Tu PC (Compra Ágil): sin envíos aún';
@@ -280,6 +306,80 @@
         <div class="acts"><a class="btn btn-ghost" href="${ficha(p.codigo)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Ficha</a>${acts}</div>
       </article>`;
     }).join('') : `<div class="glass empty">Aún no preparas postulaciones. Usa 🚀 Postular en una oportunidad.</div>`;
+    icons();
+  }
+
+  /* Temporadas */
+  function pintarTemporadas(){
+    const ts = D.temporadas || [];
+    $('#temporadas').innerHTML = ts.length ? ts.map(t => `<div class="glass dia"><h3>${esc(t.nombre)} · ${esc(new Date(t.fecha + 'T12:00:00').toLocaleDateString('es-CL', { day:'numeric', month:'long' }))}</h3>
+      <ul><li>Faltan ${t.faltan} días. Los organismos suelen publicar unos ${t.anticipo} días antes: ${esc(t.que)}.</li></ul></div>`).join('')
+      : '<div class="glass empty">No hay temporadas en los próximos 4 meses.</div>';
+  }
+
+  /* Órdenes de compra */
+  function pintarOrdenes(){
+    $('#ordenesNota').textContent = D.proveedorInscrito
+      ? 'Órdenes de compra emitidas a NOVA AUDIOVISUAL SPA. Marca cuando factures y cuando te paguen: si pasan 30 días desde la factura sin pago, te aviso para reclamar.'
+      : 'Todavía no encuentro a NOVA AUDIOVISUAL SPA como proveedor en Mercado Público. Termina la inscripción y desde ahí aparecen aquí tus órdenes de compra, con avisos de facturación y pago.';
+    const xs = D.ocs || [];
+    $('#ocs').innerHTML = xs.length ? xs.map(o => {
+      const dias = o.facturada && !o.pagada ? Math.floor((Date.now() - new Date(o.facturada)) / 864e5) : null;
+      const est = o.pagada ? '<span class="est ganada" style="margin-left:auto">Pagada</span>' : o.facturada ? `<span class="est ${dias >= 30 ? 'perdida' : 'postulado'}" style="margin-left:auto">Facturada hace ${dias} días</span>` : '<span class="est" style="margin-left:auto">Por facturar</span>';
+      return `<article class="op">
+        <div class="head"><span class="tag lic">🧾 ${esc(o.codigo)}</span>${est}</div>
+        <h3>${esc(o.nombre)}</h3>
+        <div class="org">${esc(o.organismo)}${o.contacto ? ' · ' + esc(o.contacto) : ''}</div>
+        <div class="meta"><span>Neto <b>${pesos(o.neto || 0)}</b></span><span>Total <b>${pesos(o.total || 0)}</b></span><span>${esc(o.estado)}</span></div>
+        <div class="acts">
+          <a class="btn btn-ghost" href="https://www.mercadopublico.cl/PurchaseOrder/Modules/PO/DetailsPurchaseOrder.aspx?codigoOC=${encodeURIComponent(o.codigo)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Orden</a>
+          ${o.pagada ? '' : o.facturada ? `<button class="btn btn-main" data-oc="${esc(o.codigo)}" data-acc="pago">💵 Me pagaron</button>` : `<button class="btn btn-main" data-oc="${esc(o.codigo)}" data-acc="factura">🧾 Ya facturé</button>`}
+        </div></article>`;
+    }).join('') : '<div class="glass empty">Aún no hay órdenes de compra.</div>';
+    icons();
+  }
+
+  /* Clientes */
+  function pintarClientes(){
+    const q = norm($('#qCli').value);
+    const xs = (D.clientes || []).filter(c => !q || norm(c.organismo + ' ' + c.region).includes(q));
+    $('#cli').innerHTML = xs.length ? xs.map(c => `<tr>
+      <td><b>${esc(c.organismo)}</b>${c.region ? `<br><small>${esc(c.region)}</small>` : ''}</td>
+      <td class="num">${c.compras}</td>
+      <td class="num">${c.mediana ? pesos(c.mediana) : '—'}</td>
+      <td>${(c.contactos || []).map(p => `${esc(p.nombre)} <small>${esc(p.rol || '')}${p.email ? ' · ' + esc(p.email) : ''}${p.fono ? ' · ' + esc(p.fono) : ''}</small>`).join('<br>') || '<small>Sin contacto en los datos</small>'}</td>
+      <td><button class="btn btn-ghost" style="padding:8px 12px;font-size:13px" data-correo="${esc(c.organismo)}">✉️ Correo</button></td></tr>`).join('')
+      : '<tr><td colspan="5" class="empty">Aún no hay clientes. Se llenan con el historial de precios y las licitaciones que encuentra el radar.</td></tr>';
+  }
+
+  /* Documentos y vitrina */
+  function pintarDocs(){
+    const docs = D.docs || [];
+    $('#docs').innerHTML = `<h3 style="margin:0">Documentos que vencen</h3>
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Pon la fecha de vencimiento y te aviso por Telegram 30, 7 y 1 día antes. Deja la fecha vacía si no aplica.</p>
+      ${docs.concat([{ id:'', nombre:'', vence:'' }]).map((d, i) => `<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:8px">
+        <input name="nombre" data-i="${i}" data-id="${esc(d.id)}" value="${esc(d.nombre)}" placeholder="Otro documento…">
+        <input name="vence" data-i="${i}" type="date" value="${esc(d.vence)}"></div>`).join('')}
+      <div><button class="btn btn-main" type="submit"><i data-lucide="calendar-clock" class="icon"></i>Guardar documentos</button></div>`;
+    icons();
+  }
+  function pintarVitrina(){
+    const v = D.vitrina || {};
+    const url = 'https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-servicios.html';
+    $('#vitrina').innerHTML = `<h3 style="margin:0">Vitrina pública: servicios y portafolio</h3>
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Se muestra en <a href="${url}" target="_blank" rel="noopener">${url}</a> y se enlaza en tus cotizaciones y correos. No muestra tarifas.</p>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="publicar" style="width:auto" ${v.publicar ? 'checked' : ''}> Publicar la vitrina</label>
+      <label>Título<input name="titulo" value="${esc(v.titulo || 'NOVAUDIOVISUAL · Productora audiovisual')}"></label>
+      <label>Presentación<textarea name="bajada" rows="3">${esc(v.bajada || '')}</textarea></label>
+      <label>Servicios<span>Uno por línea</span><textarea name="servicios" rows="5">${esc(v.servicios || 'Videos corporativos e institucionales\nTransmisiones en vivo (streaming) multicámara\nRegistro y cobertura de eventos\nCápsulas y contenido para redes sociales\nFotografía\nEdición y postproducción')}</textarea></label>
+      <label>Portafolio<span>Enlaces de YouTube o Vimeo, uno por línea</span><textarea name="videos" rows="4">${esc((v.videos || []).join('\n'))}</textarea></label>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">
+        <label>Correo<input name="email" type="email" value="${esc(v.email || '')}"></label>
+        <label>Teléfono / WhatsApp<input name="telefono" value="${esc(v.telefono || '')}"></label>
+        <label>Instagram<input name="instagram" value="${esc(v.instagram || '')}" placeholder="@novaudiovisual"></label>
+      </div>
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Canal público de Telegram: ${D.canal ? `<b>${esc(D.canal)}</b> conectado` : 'sin conectar (en Telegram: /canal @nombre)'}</p>
+      <div><button class="btn btn-main" type="submit"><i data-lucide="store" class="icon"></i>Guardar vitrina</button></div>`;
     icons();
   }
 
@@ -447,6 +547,46 @@
       }
       if (no) { await call('/postulacion', 'POST', { codigo: no.dataset.nopost, estado: 'descartado' }); D = await call('/panel'); pintar(); toast('Anotado'); }
     } catch { toast('No se pudo. Revisa tu conexión.'); }
+  });
+  $('#ocs').addEventListener('click', async e => {
+    const b = e.target.closest('[data-oc]'); if (!b) return;
+    try { await call('/oc', 'POST', { codigo: b.dataset.oc, accion: b.dataset.acc }); D = await call('/panel'); pintar(); toast(b.dataset.acc === 'pago' ? '💵 Marcada como pagada' : '🧾 Anotado: si no pagan en 30 días te aviso'); }
+    catch { toast('No se pudo. Revisa tu conexión.'); }
+  });
+  $('#qCli').addEventListener('input', pintarClientes);
+  $('#cli').addEventListener('click', async e => {
+    const b = e.target.closest('[data-correo]'); if (!b) return;
+    b.disabled = true; b.textContent = 'Redactando…';
+    try {
+      const r = await call('/correo', 'POST', { organismo: b.dataset.correo });
+      $('#correoPara').textContent = `Para: ${b.dataset.correo}${r.contacto ? ' · ' + r.contacto.nombre : ''}${r.para ? ' <' + r.para + '>' : ' (busca el correo en su sitio web)'}`;
+      $('#correoAsunto').value = r.asunto; $('#correoCuerpo').value = r.cuerpo;
+      $('#correoBox').hidden = false; $('#correoBox').scrollIntoView({ behavior: 'smooth' });
+    } catch { toast('No pude redactar el correo. Intenta de nuevo.'); }
+    b.disabled = false; b.textContent = '✉️ Correo';
+  });
+  $('#correoCopiar').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(`${$('#correoAsunto').value}\n\n${$('#correoCuerpo').value}`); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo'); }
+  });
+  $('#correoMail').addEventListener('click', e => {
+    e.preventDefault();
+    const para = ($('#correoPara').textContent.match(/<([^>]+)>/) || [])[1] || '';
+    location.href = `mailto:${encodeURIComponent(para)}?subject=${encodeURIComponent($('#correoAsunto').value)}&body=${encodeURIComponent($('#correoCuerpo').value)}`;
+  });
+  $('#correoCerrar').addEventListener('click', () => { $('#correoBox').hidden = true; });
+  $('#docs').addEventListener('submit', async e => {
+    e.preventDefault();
+    const nombres = [...e.target.querySelectorAll('[name=nombre]')], fechas = [...e.target.querySelectorAll('[name=vence]')];
+    const docs = nombres.map((n, i) => ({ id: n.dataset.id || 'd' + Date.now().toString(36) + i, nombre: n.value.trim(), vence: fechas[i].value })).filter(d => d.nombre);
+    try { const r = await call('/docs', 'PUT', { docs }); D.docs = r.docs; pintarDocs(); toast('✅ Documentos guardados'); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
+  });
+  $('#vitrina').addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const datos = Object.fromEntries(f); datos.publicar = f.get('publicar') === 'on';
+    try { const r = await call('/vitrina', 'PUT', datos); D.vitrina = r.vitrina; pintarVitrina(); toast(r.vitrina.publicar ? '✅ Vitrina publicada' : '✅ Guardada (sin publicar)'); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
   });
   $('#prefs').addEventListener('submit', async e => {
     e.preventDefault();

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090d" />
+  <title>NOVAUDIOVISUAL · Servicios y portafolio</title>
+  <meta name="description" content="NOVA AUDIOVISUAL SPA: videos corporativos e institucionales, streaming multicámara, registro de eventos, fotografía y postproducción. Proveedor del Estado en Mercado Público." />
+  <link rel="canonical" href="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-servicios.html" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NOVAUDIOVISUAL" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="NOVAUDIOVISUAL" />
+  <meta property="og:locale" content="es_CL" />
+  <meta property="og:title" content="NOVAUDIOVISUAL · Servicios y portafolio" />
+  <meta property="og:description" content="Videos corporativos, streaming multicámara, registro de eventos, fotografía y postproducción." />
+  <meta property="og:url" content="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-servicios.html" />
+  <meta property="og:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NOVAUDIOVISUAL · Servicios y portafolio" />
+  <meta name="twitter:description" content="Videos corporativos, streaming multicámara, registro de eventos, fotografía y postproducción." />
+  <meta name="twitter:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css" />
+  <script src="lucide.min.js"></script>
+  <style>
+    .hero{padding:48px 0 10px}
+    .hero h1{font-size:clamp(30px,5vw,54px); line-height:1.02; margin:12px 0 12px; font-weight:700}
+    .hero p.lead{color:var(--tx2); font-size:16.5px; max-width:720px; margin:0; white-space:pre-line}
+    h2{font-size:22px; margin:40px 0 14px}
+    .servicios{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px}
+    .serv{padding:18px; display:flex; gap:12px; align-items:flex-start}
+    .serv .ico{width:38px; height:38px; border-radius:11px; display:grid; place-items:center; background:rgba(255,179,71,.1); color:var(--amber); flex:none}
+    .serv b{font-size:15px; line-height:1.35}
+    .videos{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px}
+    .video{aspect-ratio:16/9; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#000}
+    .video iframe{width:100%; height:100%; border:0}
+    .contacto{padding:22px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+    .contacto p{margin:0 auto 0 0; color:var(--tx2); font-size:14px; max-width:520px}
+    .gob{margin-top:14px; font-size:13px; color:var(--tx3)}
+    .empty{padding:40px; text-align:center; color:var(--tx2)}
+    @media (max-width:520px){ .videos{grid-template-columns:minmax(0,1fr)} }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="logo"><i data-lucide="clapperboard" class="icon"></i></span><span>NOVAUDIOVISUAL<small>Productora audiovisual</small></span></a>
+    <span class="rec">REC</span>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="novaudiovisual-trabajos.html">Trabajos</a>
+      <a href="novaudiovisual-fondos.html">Fondos y festivales</a>
+      <a href="novaudiovisual-licitaciones.html">Licitaciones</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <div class="glass empty" style="margin-top:60px">Cargando…</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>NOVA AUDIOVISUAL SPA · RUT 77.836.298-8 · Renca, Región Metropolitana</span>
+    <a href="index.html">Portal NOVAUDIOVISUAL</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const icons = () => window.lucide && lucide.createIcons();
+  // Íconos según el servicio
+  const ico = s => /stream|vivo|transmi/i.test(s) ? 'radio' : /foto/i.test(s) ? 'camera' : /evento|registro|cobertura/i.test(s) ? 'calendar-check' : /redes|c[aá]psula|contenido/i.test(s) ? 'smartphone' : /edici|post/i.test(s) ? 'scissors' : /dron|a[eé]re/i.test(s) ? 'plane' : 'clapperboard';
+  // Solo YouTube y Vimeo, con su reproductor oficial
+  function embed(u){
+    let m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
+    if (m) return `https://www.youtube-nocookie.com/embed/${m[1]}`;
+    m = u.match(/vimeo\.com\/(\d+)/);
+    return m ? `https://player.vimeo.com/video/${m[1]}` : null;
+  }
+
+  function pintar(v){
+    const servicios = String(v.servicios || '').split('\n').map(s => s.trim()).filter(Boolean);
+    const videos = (v.videos || []).map(embed).filter(Boolean);
+    const wa = String(v.telefono || '').replace(/[^\d]/g, '');
+    const ig = String(v.instagram || '').replace(/^@/, '').replace(/[^\w.]/g, '');
+    $('#main').innerHTML = `
+      <section class="hero">
+        <span class="tag cl">Productora audiovisual · Chile</span>
+        <h1>${esc(v.titulo || 'NOVAUDIOVISUAL')}</h1>
+        ${v.bajada ? `<p class="lead">${esc(v.bajada)}</p>` : ''}
+        <p class="gob">✔ Proveedor del Estado: cotizamos por Compra Ágil y licitaciones en Mercado Público.</p>
+      </section>
+      ${servicios.length ? `<h2>Servicios</h2><div class="servicios">${servicios.map(s => `<div class="glass serv"><span class="ico"><i data-lucide="${ico(s)}" class="icon"></i></span><b>${esc(s)}</b></div>`).join('')}</div>` : ''}
+      ${videos.length ? `<h2>Portafolio</h2><div class="videos">${videos.map(src => `<div class="video"><iframe src="${src}" title="Video del portafolio" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`).join('')}</div>` : ''}
+      <h2>Contacto</h2>
+      <div class="glass contacto">
+        <p>Cuéntanos qué necesitas: te enviamos una cotización formal, también por Compra Ágil.</p>
+        ${v.email ? `<a class="btn btn-main" href="mailto:${esc(v.email)}?subject=${encodeURIComponent('Cotización NOVAUDIOVISUAL')}"><i data-lucide="mail" class="icon"></i>${esc(v.email)}</a>` : ''}
+        ${wa ? `<a class="btn btn-ghost" href="https://wa.me/${wa}" target="_blank" rel="noopener"><i data-lucide="message-circle" class="icon"></i>WhatsApp</a>` : ''}
+        ${ig ? `<a class="btn btn-ghost" href="https://instagram.com/${ig}" target="_blank" rel="noopener"><i data-lucide="instagram" class="icon"></i>@${esc(ig)}</a>` : ''}
+      </div>`;
+    icons();
+  }
+
+  fetch('https://nova-radar.simonrovi.workers.dev/public/vitrina').then(r => r.json()).then(v => {
+    if (v.publicar) pintar(v);
+    else $('#main').innerHTML = '<div class="glass empty" style="margin-top:60px">Estamos preparando esta página. Vuelve pronto.</div>';
+  }).catch(() => { $('#main').innerHTML = '<div class="glass empty" style="margin-top:60px">No pude cargar la página. Revisa tu conexión.</div>'; });
+  icons();
+})();
+</script>
+<script>if('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body>
+</html>

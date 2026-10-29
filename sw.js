@@ -2,7 +2,7 @@
 // Páginas y datos .json: red primero (siempre lo último) y caché si no hay señal.
 // Estáticos y fuentes: caché primero. Subir VERSION en cada cambio de archivos estáticos.
 // La API del radar (otro dominio) nunca pasa por aquí.
-const VERSION = 'nova-v3';
+const VERSION = 'nova-v4';
 const CORE = [
   './', './index.html', './novaudiovisual-trabajos.html', './novaudiovisual-fondos.html', './novaudiovisual-licitaciones.html', './fondos.json',
   './nova.css', './lucide.min.js', './manifest.json', './icon-192.png', './icon-512.png'
