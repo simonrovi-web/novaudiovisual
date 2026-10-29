@@ -255,7 +255,8 @@
         <div class="acts">
           <a class="btn btn-ghost" href="${ficha(o.c)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Ficha</a>
           <button class="btn btn-ghost" data-seguir="${esc(o.c)}">${on ? '★ Siguiendo' : '☆ Seguir'}</button>
-          <button class="btn btn-main" data-borrador="${esc(o.c)}"><i data-lucide="file-text" class="icon"></i>Borrador</button>
+          <button class="btn btn-ghost" data-borrador="${esc(o.c)}"><i data-lucide="file-text" class="icon"></i>Borrador</button>
+          <button class="btn btn-main" data-postular="${esc(o.c)}"><i data-lucide="rocket" class="icon"></i>Postular</button>
         </div>
       </article>`;
     }).join('') : `<div class="glass empty">Nada por aquí todavía. En Telegram, escribe /ahora para buscar.</div>`;
@@ -346,7 +347,7 @@
   $('#qHist').addEventListener('input', pintarPrecios);
   $('#ics').addEventListener('click', ics);
   $('#ops').addEventListener('click', async e => {
-    const s = e.target.closest('[data-seguir]'), b = e.target.closest('[data-borrador]');
+    const s = e.target.closest('[data-seguir]'), b = e.target.closest('[data-borrador]'), p = e.target.closest('[data-postular]');
     try {
       if (s) {
         const c = s.dataset.seguir, on = !sigoSet().has(c), o = D.ops.find(x => x.c === c);
@@ -355,6 +356,7 @@
         pintar(); toast(on ? '★ Siguiendo: te aviso por Telegram antes del cierre' : 'Dejaste de seguirla');
       }
       if (b) { b.disabled = true; await call('/borrador', 'POST', { codigo: b.dataset.borrador }); toast('📝 El borrador en Word llega a tu Telegram en 1 a 3 minutos'); }
+      if (p) { p.disabled = true; await call('/postular', 'POST', { codigo: p.dataset.postular }); toast('🚀 Cotización, propuesta y datos para pegar llegan a tu Telegram en 1 a 3 minutos'); }
     } catch { toast('No se pudo. Revisa tu conexión.'); }
   });
   $('#perfil').addEventListener('submit', async e => {
