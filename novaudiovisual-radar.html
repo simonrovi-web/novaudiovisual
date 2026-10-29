@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090d" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>NOVAUDIOVISUAL · Radar privado</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NOVAUDIOVISUAL" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css" />
+  <script src="lucide.min.js"></script>
+  <style>
+    .hero{padding:36px 0 6px}
+    .hero h1{font-size:clamp(28px,4.6vw,46px); line-height:1.04; margin:10px 0 8px; font-weight:700}
+    .hero p.lead{color:var(--tx2); font-size:15px; max-width:700px; margin:0}
+
+    .kpis{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; margin-top:22px}
+    .kpi{padding:16px}
+    .kpi .n{font-family:'Space Grotesk',sans-serif; font-size:30px; font-weight:700; line-height:1}
+    .kpi .t{font-size:13px; color:var(--tx2); margin-top:6px}
+
+    .tabs{display:flex; gap:7px; flex-wrap:wrap; margin:28px 0 16px}
+    .bar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:14px}
+    .bar .chips{display:flex; gap:6px; flex-wrap:wrap}
+    .bar input{max-width:320px}
+
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:12px}
+    .op{display:flex; flex-direction:column; gap:10px; padding:18px; border-radius:16px; background:var(--panel); border:1px solid var(--line)}
+    .op.sigo{border-color:rgba(255,179,71,.5)}
+    .op.cerrada{opacity:.55}
+    .op .head{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .op h3{margin:0; font-size:16px; line-height:1.3; font-family:'Inter'; letter-spacing:0}
+    .op .org{font-size:12.5px; color:var(--tx3)}
+    .op .meta{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--tx2)}
+    .op .meta b{color:var(--tx)}
+    .op p{margin:0; font-size:13.5px; color:var(--tx2); line-height:1.45}
+    .op .ref{font-size:12.5px; color:#ffd59a; background:rgba(255,179,71,.08); border:1px solid rgba(255,179,71,.2); border-radius:10px; padding:8px 10px}
+    .op .acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
+    .op .acts .btn{padding:9px 13px; font-size:13px}
+    .score{margin-left:auto; font-family:'Space Grotesk'; font-weight:700; font-size:14px; padding:3px 9px; border-radius:8px; background:rgba(255,255,255,.06)}
+    .score.hi{background:var(--grad); color:#170c12}
+    .tag.ca{background:rgba(255,179,71,.16); color:#ffd59a}
+    .tag.lic{background:rgba(155,92,255,.16); color:#c6a6ff}
+    .urg{color:#ff9a9c; font-weight:700}
+
+    .cal{display:flex; flex-direction:column; gap:10px}
+    .dia{padding:14px 16px}
+    .dia h3{margin:0 0 8px; font-size:15px}
+    .dia ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px}
+    .dia li{font-size:13.5px; color:var(--tx2); display:flex; gap:8px; align-items:baseline}
+    .dia li a{color:var(--tx)}
+
+    .stats{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:14px}
+    .tbl{overflow-x:auto; padding:0}
+    table{width:100%; border-collapse:collapse; font-size:13px; min-width:760px}
+    th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+    th{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--tx3); font-weight:700}
+    td.num{text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums}
+    td small{color:var(--tx3)}
+
+    .form{display:grid; gap:14px; padding:20px}
+    .form label{font-size:13px; font-weight:600; display:flex; flex-direction:column; gap:6px}
+    .form label span{font-weight:400; color:var(--tx3); font-size:12px}
+    textarea{font:inherit; color:var(--tx); background:rgba(0,0,0,.35); border:1px solid var(--line); border-radius:12px; padding:12px 14px; outline:none; width:100%; min-height:90px; resize:vertical}
+    textarea:focus{border-color:var(--line2); box-shadow:0 0 0 3px rgba(255,179,71,.12)}
+
+    .gate{max-width:460px; margin:60px auto; padding:26px; display:flex; flex-direction:column; gap:14px}
+    .gate h2{margin:0}
+    .gate p{margin:0; color:var(--tx2); font-size:14px}
+    .empty{padding:30px; text-align:center; color:var(--tx2)}
+    .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--panel2); border:1px solid var(--line2); padding:12px 18px; border-radius:12px; font-size:14px; z-index:90; opacity:0; transition:opacity .2s; pointer-events:none}
+    .toast.on{opacity:1}
+    .runs{font-size:12.5px; color:var(--tx3); margin-top:18px; line-height:1.6}
+    [hidden]{display:none!important}
+    @media (max-width:520px){ .grid{grid-template-columns:minmax(0,1fr)} .bar input{max-width:none} }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="logo"><i data-lucide="clapperboard" class="icon"></i></span><span>NOVAUDIOVISUAL<small>Radar privado</small></span></a>
+    <span class="rec">EN VIVO</span>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="novaudiovisual-trabajos.html">Trabajos</a>
+      <a href="novaudiovisual-fondos.html">Fondos y festivales</a>
+      <a href="novaudiovisual-radar.html" class="on">Radar</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="glass gate" id="gate" hidden>
+    <h2>Radar de licitaciones</h2>
+    <p>Este panel es privado. Ingresa la clave del panel (archivo <b>radar-admin-token.txt</b> en tu carpeta privado). Queda guardada solo en este dispositivo.</p>
+    <input id="tok" type="password" autocomplete="off" placeholder="Clave del panel" />
+    <button class="btn btn-main" id="entrar"><i data-lucide="lock-open" class="icon"></i>Entrar</button>
+    <p id="gateErr" class="urg" hidden></p>
+  </section>
+
+  <div id="app" hidden>
+    <section class="hero">
+      <span class="tag gob">Mercado Público · privado</span>
+      <h1>Radar <span class="grad-text">NOVAUDIOVISUAL</span></h1>
+      <p class="lead">Lo que encontró el bot de Telegram en licitaciones y Compra Ágil, lo que sigues, cuánto ganan otros en compras parecidas y la ficha de tu empresa para los borradores.</p>
+      <div class="kpis" id="kpis"></div>
+    </section>
+
+    <div class="tabs" id="tabs">
+      <button class="chip on" data-tab="ops"><i data-lucide="radar" class="icon"></i>Oportunidades</button>
+      <button class="chip" data-tab="cal"><i data-lucide="calendar-days" class="icon"></i>Calendario</button>
+      <button class="chip" data-tab="precios"><i data-lucide="badge-dollar-sign" class="icon"></i>Precios</button>
+      <button class="chip" data-tab="empresa"><i data-lucide="building-2" class="icon"></i>Mi empresa</button>
+    </div>
+
+    <section data-panel="ops">
+      <div class="bar">
+        <div class="chips" id="fOps"></div>
+        <input id="qOps" type="search" placeholder="Buscar por nombre u organismo" />
+      </div>
+      <div class="grid" id="ops"></div>
+    </section>
+
+    <section data-panel="cal" hidden>
+      <div class="bar">
+        <p style="margin:0;color:var(--tx2);font-size:14px">Cierres de los próximos 30 días: lo que sigues (★) y lo mejor que encontró el radar.</p>
+        <button class="btn btn-ghost" id="ics"><i data-lucide="calendar-plus" class="icon"></i>Exportar lo que sigo (.ics)</button>
+      </div>
+      <div class="cal" id="cal"></div>
+    </section>
+
+    <section data-panel="precios" hidden>
+      <div class="stats" id="stats"></div>
+      <div class="bar">
+        <p style="margin:0;color:var(--tx2);font-size:14px">Compras Ágiles audiovisuales ya resueltas: quién ganó y por cuánto (neto). Se actualiza cada mañana; en Telegram, /precios carga 90 días.</p>
+        <input id="qHist" type="search" placeholder="Filtrar: streaming, video, fotografía…" />
+      </div>
+      <div class="glass tbl"><table><thead><tr><th>Fecha</th><th>Compra</th><th>Ganó</th><th>Neto ganador</th><th>Ofertas</th><th>Rango ofertado</th><th>Presupuesto</th></tr></thead><tbody id="hist"></tbody></table></div>
+    </section>
+
+    <section data-panel="empresa" hidden>
+      <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Los borradores en Word usan solo estos datos: lo que dejes vacío aparece en amarillo como [COMPLETAR]. Con tarifas, la oferta económica sale con precios sugeridos. Ejemplo de tarifas: <i>Jornada de cámara con equipo $180.000 · Streaming multicámara (3 cámaras, 4 h) $650.000 · Edición por minuto final $25.000 · Fotografía de evento (4 h, 60 fotos) $150.000</i>.</p>
+      <form class="glass form" id="perfil"></form>
+    </section>
+
+    <div class="runs" id="runs"></div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>NOVAUDIOVISUAL · Radar privado (no aparece en buscadores)</span>
+    <a href="#" id="salir">Cerrar sesión en este dispositivo</a>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const API = 'https://nova-radar.simonrovi.workers.dev/api';
+  const KEY = 'nova_radar_tok';
+  const $ = s => document.querySelector(s);
+  const icons = () => window.lucide && lucide.createIcons();
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const store = {
+    get(k){ try{ return localStorage.getItem(k) }catch{ return null } },
+    set(k,v){ try{ v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v) }catch{} }
+  };
+  const pesos = n => '$' + Math.round(n).toLocaleString('es-CL');
+  const esCA = c => /-COT\d{2}$/i.test(c);
+  const ficha = c => esCA(c)
+    ? 'https://buscador.mercadopublico.cl/ficha?code=' + encodeURIComponent(c)
+    : 'https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=' + encodeURIComponent(c);
+  // Las fechas vienen en hora de Chile sin zona; el navegador del usuario está en Chile
+  const fecha = s => s ? new Date(String(s).replace(' ', 'T')) : null;
+  const fmt = d => d ? d.toLocaleString('es-CL', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+  const hrs = d => d ? (d - Date.now()) / 36e5 : NaN;
+  const median = xs => { const s = [...xs].sort((a,b) => a-b); return s.length ? s[Math.floor((s.length-1)/2)] : 0; };
+  const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+  let tok = store.get(KEY);
+  let D = null, filtro = 'abiertas';
+
+  function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2600); }
+
+  async function call(path, method = 'GET', body){
+    const r = await fetch(API + path, { method, headers: { Authorization: 'Bearer ' + tok, ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined });
+    if (r.status === 401) { store.set(KEY, null); tok = null; throw new Error('clave'); }
+    if (!r.ok) throw new Error('red');
+    return r.json();
+  }
+
+  async function cargar(){
+    try {
+      D = await call('/panel');
+      $('#gate').hidden = true; $('#app').hidden = false;
+      pintar();
+    } catch(e) {
+      $('#app').hidden = true; $('#gate').hidden = false;
+      const err = $('#gateErr');
+      err.textContent = e.message === 'clave' ? 'Esa clave no es válida.' : 'No pude conectar con el radar. Revisa tu internet.';
+      err.hidden = false;
+    }
+    icons();
+  }
+
+  const sigoSet = () => new Set(D.seguidas.map(f => f.codigo));
+
+  function pintar(){
+    const abiertas = D.ops.filter(o => hrs(fecha(o.cierre)) > 0);
+    const semana = D.ops.filter(o => o.ts > Date.now() - 7*864e5);
+    $('#kpis').innerHTML = [
+      [abiertas.length, 'oportunidades abiertas'],
+      [D.seguidas.length, 'siguiendo (★)'],
+      [semana.length, 'encontradas en 7 días'],
+      [D.hist.length, 'precios en el historial'],
+    ].map(([n,t]) => `<div class="glass kpi"><div class="n">${n}</div><div class="t">${t}</div></div>`).join('');
+    pintarOps(); pintarCal(); pintarPrecios(); pintarPerfil();
+    const m = D.meta || {};
+    const run = (x, t) => x ? `${t}: ${new Date(x.fecha).toLocaleString('es-CL')} · revisadas ${x.revisadas ?? x.total} · avisadas ${x.avisadas ?? x.agregados}` : `${t}: sin corridas aún`;
+    $('#runs').innerHTML = [run(m.lic,'🎬 Licitaciones'), run(m.ca,'⚡ Compra Ágil'), run(m.hist,'💡 Precios')].map(esc).join('<br>');
+  }
+
+  /* Oportunidades */
+  const FILTROS = [['abiertas','Abiertas'],['ca','⚡ Compra Ágil'],['lic','🎬 Licitaciones'],['sigo','★ Siguiendo'],['todas','Todas']];
+  function pintarOps(){
+    $('#fOps').innerHTML = FILTROS.map(([k,t]) => `<button class="chip ${k===filtro?'on':''}" data-f="${k}">${t}</button>`).join('');
+    const sigo = sigoSet(), q = norm($('#qOps').value);
+    let xs = D.ops.slice();
+    if (filtro === 'abiertas') xs = xs.filter(o => hrs(fecha(o.cierre)) > 0);
+    if (filtro === 'ca' || filtro === 'lic') xs = xs.filter(o => o.t === filtro && hrs(fecha(o.cierre)) > 0);
+    if (filtro === 'sigo') xs = xs.filter(o => sigo.has(o.c));
+    if (q) xs = xs.filter(o => norm(o.n + ' ' + o.o).includes(q));
+    // Abiertas primero, luego por calce
+    xs.sort((a,b) => ((hrs(fecha(b.cierre)) > 0) - (hrs(fecha(a.cierre)) > 0)) || (b.s - a.s));
+    $('#ops').innerHTML = xs.length ? xs.map(o => {
+      const h = hrs(fecha(o.cierre)), on = sigo.has(o.c);
+      const cuando = h <= 0 ? 'Cerrada' : h < 48 ? `<span class="urg">Cierra en ${Math.round(h)} h</span>` : `Cierra ${esc(fmt(fecha(o.cierre)))}`;
+      return `<article class="op ${on?'sigo':''} ${h<=0?'cerrada':''}">
+        <div class="head"><span class="tag ${o.t}">${o.t==='ca'?'⚡ Compra Ágil':'🎬 Licitación'}</span><span class="score ${o.s>=7?'hi':''}">${o.s}/10</span></div>
+        <h3>${esc(o.n)}</h3>
+        <div class="org">${esc(o.o)}${o.r ? ' · ' + esc(o.r) : ''}</div>
+        <div class="meta"><span><b>${esc(o.m)}</b></span><span>${cuando}</span></div>
+        ${o.res ? `<p>${esc(o.res)}</p>` : ''}
+        ${o.req ? `<p>⚠️ ${esc(o.req)}</p>` : ''}
+        ${o.ref ? `<div class="ref">💡 ${esc(o.ref)}</div>` : ''}
+        <div class="acts">
+          <a class="btn btn-ghost" href="${ficha(o.c)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Ficha</a>
+          <button class="btn btn-ghost" data-seguir="${esc(o.c)}">${on ? '★ Siguiendo' : '☆ Seguir'}</button>
+          <button class="btn btn-main" data-borrador="${esc(o.c)}"><i data-lucide="file-text" class="icon"></i>Borrador</button>
+        </div>
+      </article>`;
+    }).join('') : `<div class="glass empty">Nada por aquí todavía. En Telegram, escribe /ahora para buscar.</div>`;
+    icons();
+  }
+
+  /* Calendario */
+  function eventos(){
+    const sigo = sigoSet(), ev = new Map();
+    for (const f of D.seguidas) ev.set(f.codigo, { c: f.codigo, n: f.nombre, cierre: f.cierre, sigo: true });
+    for (const o of D.ops) if (!ev.has(o.c) && o.s >= 6) ev.set(o.c, { c: o.c, n: o.n, cierre: o.cierre, sigo: sigo.has(o.c), m: o.m });
+    return [...ev.values()].filter(e => { const h = hrs(fecha(e.cierre)); return h > 0 && h <= 30*24; }).sort((a,b) => fecha(a.cierre) - fecha(b.cierre));
+  }
+  function pintarCal(){
+    const dias = new Map();
+    for (const e of eventos()) {
+      const k = fecha(e.cierre).toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' });
+      if (!dias.has(k)) dias.set(k, []);
+      dias.get(k).push(e);
+    }
+    $('#cal').innerHTML = dias.size ? [...dias].map(([d, es]) => `<div class="glass dia"><h3>${esc(d)}</h3><ul>${es.map(e =>
+      `<li><span>${e.sigo ? '★' : '·'}</span><span>${fecha(e.cierre).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}</span><a href="${ficha(e.c)}" target="_blank" rel="noopener">${esc(e.n)}</a>${e.m ? `<small>${esc(e.m)}</small>` : ''}</li>`).join('')}</ul></div>`).join('')
+      : `<div class="glass empty">No hay cierres en los próximos 30 días.</div>`;
+  }
+  function ics(){
+    const pad = n => String(n).padStart(2,'0');
+    const f = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+    const ev = D.seguidas.filter(s => hrs(fecha(s.cierre)) > 0);
+    if (!ev.length) return toast('No sigues nada abierto todavía.');
+    const lineas = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//NOVAUDIOVISUAL//Radar//ES'];
+    for (const s of ev) {
+      const d = fecha(s.cierre);
+      lineas.push('BEGIN:VEVENT', `UID:${s.codigo}@novaudiovisual`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(new Date(d - 36e5))}`, `DTEND:${f(d)}`,
+        `SUMMARY:Cierre: ${s.nombre.replace(/[,;\n]/g,' ')}`, `URL:${ficha(s.codigo)}`, 'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Cierra la oferta','TRIGGER:-P1D','END:VALARM','END:VEVENT');
+    }
+    lineas.push('END:VCALENDAR');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([lineas.join('\r\n')], { type: 'text/calendar' }));
+    a.download = 'novaudiovisual-cierres.ics'; a.click();
+  }
+
+  /* Precios */
+  function pintarPrecios(){
+    const cat = (k) => D.hist.filter(h => norm(h.n).includes(k)).map(h => h.gn);
+    $('#stats').innerHTML = [['streaming','Streaming'],['video','Video'],['fotograf','Fotografía'],['produccion','Producción']].map(([k,t]) => {
+      const xs = cat(k);
+      return `<div class="glass kpi"><div class="n">${xs.length ? pesos(median(xs)) : '—'}</div><div class="t">${t}: mediana neta ganadora${xs.length ? ` · ${xs.length} compra${xs.length === 1 ? '' : 's'}` : ''}</div></div>`;
+    }).join('');
+    const q = norm($('#qHist').value);
+    const xs = D.hist.filter(h => !q || norm(h.n + ' ' + h.o + ' ' + h.g).includes(q)).slice(0, 200);
+    $('#hist').innerHTML = xs.length ? xs.map(h => `<tr>
+      <td>${esc(h.f)}</td>
+      <td><a href="${ficha(h.c)}" target="_blank" rel="noopener">${esc(h.n)}</a><br><small>${esc(h.o)}${h.r ? ' · ' + esc(h.r) : ''}</small></td>
+      <td>${esc(h.g)}</td>
+      <td class="num"><b>${pesos(h.gn)}</b></td>
+      <td class="num">${h.k}</td>
+      <td class="num">${pesos(h.min)} – ${pesos(h.max)}</td>
+      <td class="num">${h.d ? pesos(h.d) : '—'}</td></tr>`).join('')
+      : `<tr><td colspan="7" class="empty">Aún no hay precios. En Telegram escribe /precios para cargar los últimos 90 días.</td></tr>`;
+  }
+
+  /* Mi empresa */
+  const AYUDAS = {
+    experiencia: 'Trabajos que has hecho: para quién, qué, cuándo. Ej.: "Streaming 3 cámaras Cuenta Pública Municipalidad X, 2025".',
+    clientes: 'Organismos o empresas para las que has trabajado.',
+    equipo: 'Personas y roles: director, camarógrafos, editor, sonidista…',
+    equipamiento: 'Cámaras, switcher, audio, luces, drones, encoder de streaming…',
+    tarifas: 'Precios netos base, uno por línea. El borrador los usa para sugerir montos.',
+  };
+  function pintarPerfil(){
+    $('#perfil').innerHTML = Object.entries(D.campos).map(([k,t]) =>
+      `<label>${esc(t)}${AYUDAS[k] ? `<span>${esc(AYUDAS[k])}</span>` : ''}<textarea name="${k}" rows="${k==='tarifas'||k==='experiencia'?6:3}">${esc(D.perfil[k] || '')}</textarea></label>`).join('') +
+      `<div><button class="btn btn-main" type="submit"><i data-lucide="save" class="icon"></i>Guardar ficha</button></div>`;
+    icons();
+  }
+
+  /* Eventos */
+  $('#entrar').addEventListener('click', () => { tok = $('#tok').value.trim(); if (!tok) return; store.set(KEY, tok); cargar(); });
+  $('#tok').addEventListener('keydown', e => { if (e.key === 'Enter') $('#entrar').click(); });
+  $('#salir').addEventListener('click', e => { e.preventDefault(); store.set(KEY, null); tok = null; location.reload(); });
+  $('#tabs').addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b) return;
+    document.querySelectorAll('#tabs .chip').forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== b.dataset.tab);
+  });
+  $('#fOps').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { filtro = b.dataset.f; pintarOps(); } });
+  $('#qOps').addEventListener('input', pintarOps);
+  $('#qHist').addEventListener('input', pintarPrecios);
+  $('#ics').addEventListener('click', ics);
+  $('#ops').addEventListener('click', async e => {
+    const s = e.target.closest('[data-seguir]'), b = e.target.closest('[data-borrador]');
+    try {
+      if (s) {
+        const c = s.dataset.seguir, on = !sigoSet().has(c), o = D.ops.find(x => x.c === c);
+        await call('/seguir', 'POST', { codigo: c, on, nombre: o?.n, cierre: o?.cierre });
+        if (on) D.seguidas.push({ codigo: c, nombre: o?.n, cierre: o?.cierre }); else D.seguidas = D.seguidas.filter(f => f.codigo !== c);
+        pintar(); toast(on ? '★ Siguiendo: te aviso por Telegram antes del cierre' : 'Dejaste de seguirla');
+      }
+      if (b) { b.disabled = true; await call('/borrador', 'POST', { codigo: b.dataset.borrador }); toast('📝 El borrador en Word llega a tu Telegram en 1 a 3 minutos'); }
+    } catch { toast('No se pudo. Revisa tu conexión.'); }
+  });
+  $('#perfil').addEventListener('submit', async e => {
+    e.preventDefault();
+    const datos = Object.fromEntries(new FormData(e.target));
+    try { await call('/perfil', 'PUT', datos); D.perfil = datos; toast('✅ Ficha guardada: los próximos borradores ya la usan'); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
+  });
+
+  if (tok) cargar(); else { $('#gate').hidden = false; icons(); }
+})();
+</script>
+<script>if('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body>
+</html>

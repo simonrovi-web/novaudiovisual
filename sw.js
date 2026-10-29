@@ -1,9 +1,10 @@
 // NOVAUDIOVISUAL · service worker
-// Páginas: red primero (siempre lo último) y caché si no hay señal.
+// Páginas y datos .json: red primero (siempre lo último) y caché si no hay señal.
 // Estáticos y fuentes: caché primero. Subir VERSION en cada cambio de archivos estáticos.
-const VERSION = 'nova-v1';
+// La API del radar (otro dominio) nunca pasa por aquí.
+const VERSION = 'nova-v2';
 const CORE = [
-  './', './index.html', './novaudiovisual-trabajos.html', './novaudiovisual-fondos.html',
+  './', './index.html', './novaudiovisual-trabajos.html', './novaudiovisual-fondos.html', './fondos.json',
   './nova.css', './lucide.min.js', './manifest.json', './icon-192.png', './icon-512.png'
 ];
 
@@ -25,7 +26,7 @@ self.addEventListener('fetch', e => {
   const isFont = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
   if (url.origin !== location.origin && !isFont) return;
 
-  if (req.mode === 'navigate' || req.destination === 'document') {
+  if (req.mode === 'navigate' || req.destination === 'document' || url.pathname.endsWith('.json')) {
     e.respondWith(
       fetch(req).then(res => {
         const copy = res.clone();

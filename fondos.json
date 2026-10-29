@@ -1,0 +1,165 @@
+{
+ "revisado": "2026-10-29",
+ "nota": "Fuente única de fondos, festivales y mercados. La usan novaudiovisual-fondos.html y el radar de Telegram. est:true = fecha estimada según la edición anterior.",
+ "items": [
+  {
+   "id": "fondo-audiovisual",
+   "tipo": "fondo",
+   "n": "Fondo de Fomento Audiovisual 2027",
+   "org": "Ministerio de las Culturas · Fondos de Cultura",
+   "icon": "hand-coins",
+   "u": "https://www.fondosdecultura.cl/",
+   "bases": true,
+   "d": "Bases 2027 publicadas en julio de 2026, una por línea. Revisa el cierre de cada una en sus bases. Los montos dependen de la Ley de Presupuestos 2027 y algunas líneas bajaron sus topes.",
+   "lines": [
+    "Producción regional",
+    "Largometrajes",
+    "Becas Chile Crea",
+    "Difusión y exhibición",
+    "Formación",
+    "Investigación",
+    "Webseries",
+    "Distribución",
+    "Videojuegos"
+   ],
+   "w": []
+  },
+  {
+   "id": "cntv",
+   "tipo": "fondo",
+   "n": "Fondo CNTV",
+   "org": "Consejo Nacional de Televisión",
+   "icon": "tv",
+   "u": "https://www.cntv.cl/",
+   "d": "Financia series, programas y contenidos para televisión. Se postula en fondos.gob.cl.",
+   "prev": "2026: postulación del 2 de marzo al 1 de abril; ganadores en octubre.",
+   "w": [
+    {
+     "k": "conv",
+     "a": "2027-03-01",
+     "b": "2027-04-01",
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "ibermedia",
+   "tipo": "fondo",
+   "n": "Programa Ibermedia",
+   "org": "Fondo iberoamericano de cine",
+   "icon": "globe",
+   "u": "https://www.programaibermedia.com/",
+   "d": "Codesarrollo de largometrajes y series, coproducción y formación entre países iberoamericanos.",
+   "prev": "2026: aprox. fines de enero a fines de marzo (las fuentes difieren; revisa las bases).",
+   "w": [
+    {
+     "k": "conv",
+     "a": "2027-01-30",
+     "b": "2027-03-30",
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "corfo",
+   "tipo": "fondo",
+   "n": "CORFO · Industrias creativas",
+   "org": "CORFO y sus direcciones regionales",
+   "icon": "building-2",
+   "u": "https://www.corfo.cl/",
+   "d": "Instrumentos para empresas creativas y audiovisuales. Varios son regionales o de postulación permanente, como el PAR Industrias Creativas de Atacama 2026.",
+   "permanente": true,
+   "w": []
+  },
+  {
+   "id": "sanfic",
+   "tipo": "festival",
+   "n": "SANFIC",
+   "org": "Festival Internacional de Cine de Santiago",
+   "icon": "award",
+   "u": "https://sanfic.com/",
+   "d": "Competencias de largometrajes y cortometrajes nacionales e internacionales. Se postula por Festhome; las obras chilenas no pagan.",
+   "prev": "2026: postulación del 20 de julio al 14 de agosto.",
+   "w": [
+    {
+     "k": "evento",
+     "a": "2026-11-02",
+     "b": "2026-11-08",
+     "lugar": "Santiago"
+    },
+    {
+     "k": "conv",
+     "a": "2027-07-20",
+     "b": "2027-08-14",
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "fidocs",
+   "tipo": "festival",
+   "n": "FIDOCS",
+   "org": "Festival Internacional de Documentales de Santiago",
+   "icon": "award",
+   "u": "https://fidocs.cl/",
+   "d": "El festival de documental más antiguo de Chile, con competencias nacional e internacional.",
+   "prev": "2026: postulación del 8 de abril al 10 de julio.",
+   "w": [
+    {
+     "k": "evento",
+     "a": "2026-11-12",
+     "b": "2026-11-19",
+     "lugar": "Santiago"
+    },
+    {
+     "k": "conv",
+     "a": "2027-04-08",
+     "b": "2027-07-10",
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "ficvaldivia",
+   "tipo": "festival",
+   "n": "FICValdivia",
+   "org": "Festival Internacional de Cine de Valdivia",
+   "icon": "award",
+   "u": "https://ficvaldivia.cl/",
+   "d": "Festival de cine de autor; se realiza habitualmente en octubre. Postulación por Festhome.",
+   "prev": "2026: postulación del 9 de marzo al 24 de abril.",
+   "w": [
+    {
+     "k": "conv",
+     "a": "2027-03-09",
+     "b": "2027-04-24",
+     "est": true
+    },
+    {
+     "k": "evento",
+     "a": "2027-10-11",
+     "b": "2027-10-17",
+     "est": true,
+     "lugar": "Valdivia"
+    }
+   ]
+  },
+  {
+   "id": "ventana-sur",
+   "tipo": "mercado",
+   "n": "Ventana Sur",
+   "org": "Mercado audiovisual de Latinoamérica",
+   "icon": "store",
+   "u": "https://ventana-sur.com/",
+   "d": "El principal mercado de cine de la región: ventas, coproducción y laboratorios de proyectos. Alterna sede entre Montevideo y Buenos Aires.",
+   "w": [
+    {
+     "k": "evento",
+     "a": "2026-11-30",
+     "b": "2026-12-04",
+     "lugar": "Montevideo"
+    }
+   ]
+  }
+ ]
+}
