@@ -1,0 +1,23 @@
+{
+  "name": "NOVAUDIOVISUAL · Portal de realizadores",
+  "short_name": "NOVAUDIOVISUAL",
+  "description": "Trabajos, fondos y festivales para realizadores audiovisuales, en un solo lugar.",
+  "id": "/novaudiovisual/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#09090d",
+  "theme_color": "#09090d",
+  "lang": "es-CL",
+  "categories": ["entertainment", "business", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Buscar trabajos", "url": "./novaudiovisual-trabajos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Fondos y festivales", "url": "./novaudiovisual-fondos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
