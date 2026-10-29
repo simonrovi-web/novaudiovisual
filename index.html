@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090d" />
+  <title>NOVAUDIOVISUAL · Portal de realizadores</title>
+  <meta name="description" content="NOVAUDIOVISUAL: el portal de los realizadores audiovisuales. Trabajos, fondos, festivales, equipos y comunidad en un solo lugar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css" />
+  <script src="lucide.min.js"></script>
+  <style>
+    .hero{padding:64px 0 34px; text-align:center}
+    .hero h1{font-size:clamp(40px,8vw,92px); margin:14px 0 8px; font-weight:700; letter-spacing:-.04em; line-height:.95}
+    .hero p{color:var(--tx2); font-size:17px; max-width:600px; margin:0 auto 26px}
+    .quick{display:flex; gap:8px; max-width:620px; margin:0 auto; padding:8px}
+    .quick input{border:0; background:transparent; box-shadow:none!important}
+    .panels{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; margin-top:40px}
+    .panel{position:relative; display:flex; flex-direction:column; gap:10px; padding:20px; border-radius:18px; background:var(--panel); border:1px solid var(--line); text-decoration:none; min-height:170px; transition:all .2s}
+    a.panel:hover{border-color:var(--line2); transform:translateY(-3px); background:var(--panel2)}
+    .panel .ico{width:44px; height:44px; border-radius:13px; display:grid; place-items:center; background:rgba(255,179,71,.1); color:var(--amber)}
+    .panel.live .ico{background:var(--grad); color:#170c12}
+    .panel h3{margin:4px 0 0; font-size:18px}
+    .panel p{margin:0; color:var(--tx2); font-size:14px; line-height:1.45}
+    .panel .state{position:absolute; top:18px; right:18px}
+    .panel.soon{opacity:.6}
+    .panel.live{border-color:rgba(255,94,98,.35); box-shadow:0 10px 40px rgba(255,94,98,.12)}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="logo"><i data-lucide="clapperboard" class="icon"></i></span>
+      <span>NOVAUDIOVISUAL<small>Portal de realizadores</small></span>
+    </a>
+    <span class="rec">REC</span>
+    <nav>
+      <a href="index.html" class="on">Inicio</a>
+      <a href="novaudiovisual-trabajos.html">Trabajos</a>
+      <a href="novaudiovisual-fondos.html">Fondos y festivales</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="tag cl">Realizadores audiovisuales · Chile</span>
+    <h1><span class="grad-text">NOVA</span>UDIOVISUAL</h1>
+    <p>El portal de quienes hacen cine, televisión, publicidad y contenido. Trabajos, fondos, festivales y comunidad en un solo lugar.</p>
+    <form class="glass quick" action="novaudiovisual-trabajos.html">
+      <input name="q" type="search" placeholder="Busca trabajo: editor, cámara, sonido…" aria-label="Buscar trabajo" />
+      <button class="btn btn-main" type="submit"><i data-lucide="search" class="icon"></i> Buscar</button>
+    </form>
+  </section>
+
+  <section class="panels">
+    <a class="panel live" href="novaudiovisual-trabajos.html">
+      <span class="tag cl state">Activo</span>
+      <span class="ico"><i data-lucide="briefcase" class="icon"></i></span>
+      <h3>Trabajos</h3>
+      <p>Busca empleos, proyectos freelance y crew en todos los portales a la vez.</p>
+    </a>
+    <a class="panel live" href="novaudiovisual-fondos.html?f=fondo">
+      <span class="tag cl state">Activo</span>
+      <span class="ico"><i data-lucide="hand-coins" class="icon"></i></span>
+      <h3>Fondos y convocatorias</h3>
+      <p>Fechas de cierre de fondos públicos, laboratorios y concursos.</p>
+    </a>
+    <a class="panel live" href="novaudiovisual-fondos.html?f=festival">
+      <span class="tag cl state">Activo</span>
+      <span class="ico"><i data-lucide="award" class="icon"></i></span>
+      <h3>Festivales</h3>
+      <p>Calendario de festivales y plazos de postulación.</p>
+    </a>
+    <div class="panel soon"><span class="tag state">Pronto</span><span class="ico"><i data-lucide="users" class="icon"></i></span><h3>Directorio de crew</h3><p>Perfiles de realizadores y técnicos por oficio y región.</p></div>
+    <div class="panel soon"><span class="tag state">Pronto</span><span class="ico"><i data-lucide="camera" class="icon"></i></span><h3>Equipos y arriendo</h3><p>Rental de cámaras, luces y sonido.</p></div>
+    <div class="panel soon"><span class="tag state">Pronto</span><span class="ico"><i data-lucide="calculator" class="icon"></i></span><h3>Calculadora de tarifas</h3><p>Arma tu presupuesto por jornada, rol y horas extra.</p></div>
+    <div class="panel soon"><span class="tag state">Pronto</span><span class="ico"><i data-lucide="newspaper" class="icon"></i></span><h3>Noticias de la industria</h3><p>Lo último del cine y la TV en Chile y Latinoamérica.</p></div>
+    <div class="panel soon"><span class="tag state">Pronto</span><span class="ico"><i data-lucide="sparkles" class="icon"></i></span><h3>Asistente IA</h3><p>Ayuda con tu reel, tu CV y tus postulaciones.</p></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© <span id="yr"></span> NOVAUDIOVISUAL · Portal de realizadores audiovisuales</span>
+    <span>Información referencial · enlaces a sitios de terceros</span>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear(); lucide.createIcons();</script>
+</body>
+</html>

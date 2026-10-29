@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090d" />
+  <title>NOVAUDIOVISUAL · Fondos y festivales</title>
+  <meta name="description" content="Calendario de fondos concursables, festivales y mercados audiovisuales: fechas de postulación confirmadas y ventanas estimadas, en un solo lugar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css" />
+  <script src="lucide.min.js"></script>
+  <style>
+    .hero{padding:44px 0 10px}
+    .hero h1{font-size:clamp(30px,5vw,52px); line-height:1.02; margin:12px 0 10px; font-weight:700}
+    .hero p.lead{color:var(--tx2); font-size:16px; max-width:680px; margin:0}
+
+    .sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:34px 0 14px}
+    .sec-head h2{margin:0; font-size:22px}
+    .sec-head p{margin:4px 0 0; color:var(--tx2); font-size:14px}
+    .tabs{display:flex; gap:7px; flex-wrap:wrap}
+
+    /* próximos hitos */
+    .next{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; margin-top:26px}
+    .hito{padding:16px; display:flex; flex-direction:column; gap:6px}
+    .hito .n{font-family:'Space Grotesk',sans-serif; font-size:34px; font-weight:700; line-height:1}
+    .hito .n small{font-size:14px; font-weight:500; color:var(--tx2); margin-left:4px}
+    .hito .t{font-weight:600}
+    .hito .s{font-size:13px; color:var(--tx2)}
+
+    /* línea de tiempo */
+    .tl{padding:16px; overflow-x:auto}
+    .tl-in{min-width:820px; position:relative}
+    .tl-row{display:grid; grid-template-columns:170px 1fr; align-items:center; min-height:40px; border-top:1px solid var(--line)}
+    .tl-row.head{border-top:0; min-height:28px}
+    .tl-name{font-size:13px; font-weight:600; padding-right:10px; position:sticky; left:0; background:rgba(20,18,27,.95); z-index:2; height:100%; display:flex; align-items:center}
+    .tl-track{position:relative; height:40px}
+    .tl-months{display:grid; height:28px}
+    .tl-months span{font-size:11px; color:var(--tx3); text-transform:uppercase; letter-spacing:.06em; border-left:1px solid var(--line); padding-left:6px; display:flex; align-items:center}
+    .bar{position:absolute; top:11px; height:18px; border-radius:6px; min-width:6px}
+    .bar.conv{background:var(--grad)}
+    .bar.evento{background:linear-gradient(120deg,#7c5cff,#c13cff)}
+    .bar.est{background:rgba(255,179,71,.16)!important; border:1.5px dashed rgba(255,179,71,.85)}
+    .bar.est.evento{background:rgba(193,60,255,.18)!important; border-color:rgba(193,60,255,.9)}
+    .today{position:absolute; top:0; bottom:0; width:2px; background:var(--rec); box-shadow:0 0 8px var(--rec); z-index:3}
+    .today::after{content:'HOY'; position:absolute; top:-2px; left:5px; font-size:10px; font-weight:800; color:var(--rec); letter-spacing:.1em}
+    .legend{display:flex; flex-wrap:wrap; gap:16px; font-size:12.5px; color:var(--tx2); margin-top:12px}
+    .legend i{display:inline-block; width:22px; height:10px; border-radius:4px; margin-right:6px; vertical-align:middle}
+
+    /* tarjetas */
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:12px}
+    .card{display:flex; flex-direction:column; gap:12px; padding:18px; border-radius:16px; background:var(--panel); border:1px solid var(--line)}
+    .card.sigo{border-color:rgba(255,179,71,.45)}
+    .card .top{display:flex; align-items:flex-start; gap:12px}
+    .card .ico{width:40px; height:40px; border-radius:11px; display:grid; place-items:center; background:rgba(255,179,71,.1); color:var(--amber); flex:none}
+    .card.festival .ico,.card.mercado .ico{background:rgba(155,92,255,.14); color:#c6a6ff}
+    .card h3{margin:0; font-size:17px}
+    .card .org{font-size:12.5px; color:var(--tx3); margin-top:2px}
+    .star{margin-left:auto; background:none; border:0; color:var(--tx3); cursor:pointer; padding:4px; border-radius:8px}
+    .star:hover{color:var(--tx)}
+    .star.on{color:var(--amber)}
+    .star.on svg{fill:currentColor}
+    .status{display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,.04)}
+    .status.open{background:rgba(90,210,140,.12); color:#8be3b1}
+    .status.soon{background:rgba(255,179,71,.12); color:var(--amber)}
+    .status.est{background:rgba(255,255,255,.04); color:var(--tx2)}
+    .status.closed{color:var(--tx3)}
+    .dates{display:grid; gap:6px; font-size:13px; color:var(--tx2); margin:0; padding:0; list-style:none}
+    .dates li{display:flex; gap:8px; align-items:flex-start}
+    .dates b{color:var(--tx); font-weight:600}
+    .dates .icon{width:15px; height:15px; margin-top:2px; color:var(--tx3)}
+    .card .desc{margin:0; color:var(--tx2); font-size:13.5px; line-height:1.5}
+    .lines{display:flex; flex-wrap:wrap; gap:5px}
+    .card .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
+    .card .btn{padding:9px 14px; font-size:13px; border-radius:10px}
+    .empty{color:var(--tx3); font-size:14px; padding:20px 0}
+
+    .tools{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px}
+    .tool{display:flex; gap:12px; align-items:center; padding:14px 16px; text-decoration:none}
+    .tool:hover{border-color:var(--line2)}
+    .tool .icon{color:var(--amber)}
+    .tool b{display:block; font-size:14.5px}
+    .tool span{font-size:12.5px; color:var(--tx2)}
+    .notice{margin-top:18px; font-size:12.5px; color:var(--tx3); display:flex; gap:8px; align-items:flex-start}
+
+    @media (max-width:520px){ .grid{grid-template-columns:1fr} .hero{padding-top:28px} .tl-row{grid-template-columns:120px 1fr} }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="logo"><i data-lucide="clapperboard" class="icon"></i></span>
+      <span>NOVAUDIOVISUAL<small>Portal de realizadores</small></span>
+    </a>
+    <span class="rec">REC</span>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="novaudiovisual-trabajos.html">Trabajos</a>
+      <a href="novaudiovisual-fondos.html" class="on">Fondos y festivales</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="tag cl">Panel · Fondos y festivales</span>
+    <h1>Que no se te pase <span class="grad-text">ningún cierre</span>.</h1>
+    <p class="lead">Fondos concursables, festivales y mercados en un calendario. Las fechas con borde punteado son estimadas según la edición anterior: confírmalas siempre en el sitio oficial.</p>
+    <div id="next" class="next"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2>Calendario</h2>
+        <p id="range"></p>
+      </div>
+      <div id="filters" class="tabs"></div>
+    </div>
+    <div class="glass tl"><div id="tl" class="tl-in"></div></div>
+    <div class="legend">
+      <span><i style="background:var(--grad)"></i>Postulación confirmada</span>
+      <span><i style="border:1.5px dashed rgba(255,179,71,.7)"></i>Postulación estimada</span>
+      <span><i style="background:linear-gradient(120deg,#7c5cff,#c13cff)"></i>Festival / mercado</span>
+      <span><i style="border:1.5px dashed rgba(193,60,255,.8)"></i>Festival estimado</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2>Convocatorias</h2>
+        <p>Marca con ★ las que sigues para verlas primero.</p>
+      </div>
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div><h2>Para postular a festivales</h2><p>Plataformas donde se reciben la mayoría de las postulaciones, abiertas todo el año.</p></div></div>
+    <div class="tools">
+      <a class="glass tool" href="https://festhome.com/" target="_blank" rel="noopener"><i data-lucide="send" class="icon"></i><div><b>Festhome</b><span>Fuerte en Iberoamérica · la usan SANFIC y FICValdivia</span></div></a>
+      <a class="glass tool" href="https://filmfreeway.com/" target="_blank" rel="noopener"><i data-lucide="globe" class="icon"></i><div><b>FilmFreeway</b><span>Miles de festivales del mundo</span></div></a>
+      <a class="glass tool" href="https://www.fondos.gob.cl/" target="_blank" rel="noopener"><i data-lucide="landmark" class="icon"></i><div><b>fondos.gob.cl</b><span>Buscador de fondos públicos del Estado</span></div></a>
+    </div>
+    <p class="notice"><i data-lucide="info" class="icon"></i> <span>Información referencial, revisada el <span id="rev"></span>. Los montos y plazos los fija cada institución y pueden cambiar; las bases oficiales mandan.</span></p>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© <span id="yr"></span> NOVAUDIOVISUAL · Portal de realizadores audiovisuales</span>
+    <span>Información referencial · enlaces a sitios de terceros</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const REVISADO = '2026-10-29';
+
+  // Cada ventana: k = conv (postulación) | evento; est = estimada según edición anterior
+  const ITEMS = [
+    {id:'fondo-audiovisual', tipo:'fondo', n:'Fondo de Fomento Audiovisual 2027', org:'Ministerio de las Culturas · Fondos de Cultura', icon:'hand-coins',
+     u:'https://www.fondosdecultura.cl/', bases:true,
+     d:'Bases 2027 publicadas en julio de 2026, una por línea. Revisa el cierre de cada una en sus bases. Los montos dependen de la Ley de Presupuestos 2027 y algunas líneas bajaron sus topes.',
+     lines:['Producción regional','Largometrajes','Becas Chile Crea','Difusión y exhibición','Formación','Investigación','Webseries','Distribución','Videojuegos'],
+     w:[]},
+    {id:'cntv', tipo:'fondo', n:'Fondo CNTV', org:'Consejo Nacional de Televisión', icon:'tv',
+     u:'https://www.cntv.cl/', d:'Financia series, programas y contenidos para televisión. Se postula en fondos.gob.cl.',
+     prev:'2026: postulación del 2 de marzo al 1 de abril; ganadores en octubre.',
+     w:[{k:'conv', a:'2027-03-01', b:'2027-04-01', est:true}]},
+    {id:'ibermedia', tipo:'fondo', n:'Programa Ibermedia', org:'Fondo iberoamericano de cine', icon:'globe',
+     u:'https://www.programaibermedia.com/', d:'Codesarrollo de largometrajes y series, coproducción y formación entre países iberoamericanos.',
+     prev:'2026: aprox. fines de enero a fines de marzo (las fuentes difieren; revisa las bases).',
+     w:[{k:'conv', a:'2027-01-30', b:'2027-03-30', est:true}]},
+    {id:'corfo', tipo:'fondo', n:'CORFO · Industrias creativas', org:'CORFO y sus direcciones regionales', icon:'building-2',
+     u:'https://www.corfo.cl/', d:'Instrumentos para empresas creativas y audiovisuales. Varios son regionales o de postulación permanente, como el PAR Industrias Creativas de Atacama 2026.',
+     permanente:true, w:[]},
+    {id:'sanfic', tipo:'festival', n:'SANFIC', org:'Festival Internacional de Cine de Santiago', icon:'award',
+     u:'https://sanfic.com/', d:'Competencias de largometrajes y cortometrajes nacionales e internacionales. Se postula por Festhome; las obras chilenas no pagan.',
+     prev:'2026: postulación del 20 de julio al 14 de agosto.',
+     w:[{k:'evento', a:'2026-11-02', b:'2026-11-08', lugar:'Santiago'}, {k:'conv', a:'2027-07-20', b:'2027-08-14', est:true}]},
+    {id:'fidocs', tipo:'festival', n:'FIDOCS', org:'Festival Internacional de Documentales de Santiago', icon:'award',
+     u:'https://fidocs.cl/', d:'El festival de documental más antiguo de Chile, con competencias nacional e internacional.',
+     prev:'2026: postulación del 8 de abril al 10 de julio.',
+     w:[{k:'evento', a:'2026-11-12', b:'2026-11-19', lugar:'Santiago'}, {k:'conv', a:'2027-04-08', b:'2027-07-10', est:true}]},
+    {id:'ficvaldivia', tipo:'festival', n:'FICValdivia', org:'Festival Internacional de Cine de Valdivia', icon:'award',
+     u:'https://ficvaldivia.cl/', d:'Festival de cine de autor; se realiza habitualmente en octubre. Postulación por Festhome.',
+     prev:'2026: postulación del 9 de marzo al 24 de abril.',
+     w:[{k:'conv', a:'2027-03-09', b:'2027-04-24', est:true}, {k:'evento', a:'2027-10-11', b:'2027-10-17', est:true, lugar:'Valdivia'}]},
+    {id:'ventana-sur', tipo:'mercado', n:'Ventana Sur', org:'Mercado audiovisual de Latinoamérica', icon:'store',
+     u:'https://ventana-sur.com/', d:'El principal mercado de cine de la región: ventas, coproducción y laboratorios de proyectos. Alterna sede entre Montevideo y Buenos Aires.',
+     w:[{k:'evento', a:'2026-11-30', b:'2026-12-04', lugar:'Montevideo'}]}
+  ];
+
+  const TIPOS = {fondo:'Fondo', festival:'Festival', mercado:'Mercado'};
+  const FILTERS = [['todos','Todos'],['fondo','Fondos'],['festival','Festivales'],['mercado','Mercados'],['sigo','★ Siguiendo']];
+  const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const DAY = 864e5;
+
+  const $ = s => document.querySelector(s);
+  const icons = () => window.lucide && lucide.createIcons();
+  const store = {
+    get(k,d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch{ return d } },
+    set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch{} }
+  };
+  const D = s => new Date(s + 'T00:00:00');
+  const fmt = d => `${d.getDate()} ${MES[d.getMonth()]} ${d.getFullYear()}`;
+  const fmtMes = d => `${MES[d.getMonth()]} ${d.getFullYear()}`;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = (a,b) => Math.round((b - a) / DAY);
+
+  let filter = new URLSearchParams(location.search).get('f') || 'todos';
+  if(!FILTERS.some(f => f[0]===filter)) filter = 'todos';
+  let sigo = store.get('nova_sigo', []);
+
+  // Estado de un ítem: la ventana vigente o la próxima
+  function status(it){
+    if(it.bases)      return {c:'soon', t:'Bases 2027 publicadas · revisa el cierre de tu línea', ico:'file-text'};
+    if(it.permanente) return {c:'est',  t:'Postulación según instrumento y región', ico:'refresh-cw'};
+    const w = it.w.filter(x => D(x.b) >= today).sort((x,y) => D(x.a) - D(y.a))[0];
+    if(!w) return {c:'closed', t:'Edición cerrada · atento a la próxima', ico:'circle-slash'};
+    const a = D(w.a), b = D(w.b), conv = w.k==='conv';
+    if(a <= today){
+      if(w.est) return {c:'est', t:`Posiblemente ${conv?'abierta':'en curso'} (estimado)`, ico:'help-circle'};
+      const n = days(today,b);
+      return {c:'open', t: conv ? `Abierta · cierra en ${n} día${n===1?'':'s'}` : `En curso · termina en ${n} día${n===1?'':'s'}`, ico:'radio'};
+    }
+    const what = conv ? 'Postulación' : (it.tipo==='mercado' ? 'Mercado' : 'Festival');
+    if(w.est) return {c:'est', t:`${what} estimada: ${MES[a.getMonth()]}${a.getMonth()!==b.getMonth()?'–'+MES[b.getMonth()]:''} ${b.getFullYear()}`, ico:'calendar-clock'};
+    const n = days(today,a);
+    return {c:'soon', t:`${what} en ${n} día${n===1?'':'s'} · ${fmt(a)}`, ico:'calendar-check'};
+  }
+
+  function visible(){
+    return ITEMS.filter(it => filter==='todos' || (filter==='sigo' ? sigo.includes(it.id) : it.tipo===filter));
+  }
+
+  // ----- próximos hitos (solo fechas confirmadas) -----
+  function renderNext(){
+    const hitos = [];
+    ITEMS.forEach(it => it.w.forEach(w => {
+      if(w.est) return;
+      const a = D(w.a), b = D(w.b);
+      if(a > today) hitos.push({it, w, d:a, verbo: w.k==='conv' ? 'abre postulación' : 'comienza'});
+      else if(b >= today) hitos.push({it, w, d:b, verbo: w.k==='conv' ? 'cierra postulación' : 'termina'});
+    }));
+    hitos.sort((x,y) => x.d - y.d);
+    $('#next').innerHTML = hitos.slice(0,4).map(h => {
+      const n = days(today,h.d);
+      return `<div class="glass hito">
+        <span class="n">${n===0?'Hoy':n}${n===0?'':`<small>día${n===1?'':'s'}</small>`}</span>
+        <span class="t">${h.it.n} ${h.verbo}</span>
+        <span class="s">${fmt(h.d)}${h.w.lugar?' · '+h.w.lugar:''}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ----- línea de tiempo: mes actual + 12 -----
+  const start = new Date(today.getFullYear(), today.getMonth(), 1);
+  const end = new Date(today.getFullYear(), today.getMonth() + 13, 1);
+  const span = end - start;
+  const pct = d => Math.max(0, Math.min(100, (d - start) / span * 100));
+
+  function renderTL(){
+    $('#range').textContent = `De ${fmtMes(start)} a ${fmtMes(new Date(end - DAY))}.`;
+    const months = [];
+    for(let i=0;i<13;i++) months.push(new Date(start.getFullYear(), start.getMonth()+i, 1));
+    const head = `<div class="tl-row head"><div class="tl-name"></div><div class="tl-months" style="grid-template-columns:${months.map(m => (new Date(m.getFullYear(),m.getMonth()+1,1)-m)+'fr').join(' ')}">${months.map(m => `<span>${MES[m.getMonth()]}${m.getMonth()===0?' '+String(m.getFullYear()).slice(2):''}</span>`).join('')}</div></div>`;
+    const rows = visible().map(it => {
+      const bars = it.w.filter(w => D(w.b) >= start && D(w.a) < end).map(w => {
+        const l = pct(D(w.a)), r = pct(new Date(D(w.b).getTime() + DAY));
+        const tip = `${w.k==='conv'?'Postulación':'Evento'}${w.est?' (estimada)':''}: ${fmt(D(w.a))} – ${fmt(D(w.b))}`;
+        return `<span class="bar ${w.k}${w.est?' est':''}" style="left:${l}%;width:${r-l}%" title="${tip}"></span>`;
+      }).join('');
+      const note = !it.w.length ? `<span style="position:absolute;left:8px;top:12px;font-size:12px;color:var(--tx3)">${it.bases?'Ver bases por línea':'Permanente / regional'}</span>` : '';
+      return `<div class="tl-row"><div class="tl-name">${it.n}</div><div class="tl-track">${bars}${note}</div></div>`;
+    }).join('');
+    $('#tl').innerHTML = head + (rows || `<p class="empty">No sigues ninguna convocatoria todavía.</p>`) +
+      `<div class="today" style="left:calc(170px + (100% - 170px) * ${pct(today)/100})"></div>`;
+    // ajusta la línea HOY al ancho real de la columna de nombres
+    const nameW = $('#tl .tl-name')?.offsetWidth || 170;
+    $('#tl .today').style.left = `calc(${nameW}px + (100% - ${nameW}px) * ${pct(today)/100})`;
+  }
+
+  // ----- tarjetas -----
+  function renderCards(){
+    const list = visible().sort((a,b) => sigo.includes(b.id) - sigo.includes(a.id));
+    $('#grid').innerHTML = list.map(it => {
+      const s = status(it), on = sigo.includes(it.id);
+      const fechas = it.w.map(w => `<li><i data-lucide="${w.k==='conv'?'file-pen':'map-pin'}" class="icon"></i><span>${w.k==='conv'?'Postulación':'Evento'}${w.est?' <em>(estimada)</em>':''}: <b>${fmt(D(w.a))} – ${fmt(D(w.b))}</b>${w.lugar?' · '+w.lugar:''}</span></li>`).join('')
+        + (it.prev ? `<li><i data-lucide="history" class="icon"></i><span>Edición anterior · ${it.prev}</span></li>` : '');
+      const ics = it.w.some(w => !w.est && D(w.b) >= today)
+        ? `<button class="btn btn-ghost" data-ics="${it.id}"><i data-lucide="calendar-plus" class="icon"></i> Agregar al calendario</button>` : '';
+      const [tn,tc] = it.tipo==='fondo' ? ['Fondo','gob'] : [TIPOS[it.tipo],'free'];
+      return `<article class="card ${it.tipo}${on?' sigo':''}">
+        <div class="top">
+          <span class="ico"><i data-lucide="${it.icon}" class="icon"></i></span>
+          <div><h3>${it.n}</h3><div class="org">${it.org}</div></div>
+          <button class="star${on?' on':''}" data-star="${it.id}" title="${on?'Dejar de seguir':'Seguir'}" aria-label="Seguir ${it.n}"><i data-lucide="star" class="icon"></i></button>
+        </div>
+        <div class="status ${s.c}"><i data-lucide="${s.ico}" class="icon"></i>${s.t}</div>
+        <p class="desc">${it.d}</p>
+        ${it.lines ? `<div class="lines">${it.lines.map(l => `<span class="tag">${l}</span>`).join('')}</div>` : ''}
+        ${fechas ? `<ul class="dates">${fechas}</ul>` : ''}
+        <div class="actions">
+          <span class="tag ${tc}" style="align-self:center">${tn}</span>
+          <span style="flex:1"></span>
+          ${ics}
+          <a class="btn btn-main" href="${it.u}" target="_blank" rel="noopener">Sitio oficial <i data-lucide="arrow-up-right" class="icon" style="width:15px;height:15px"></i></a>
+        </div>
+      </article>`;
+    }).join('') || `<p class="empty">Marca con ★ las convocatorias que te interesan y aparecerán aquí.</p>`;
+  }
+
+  // ----- .ics para fechas confirmadas -----
+  function ics(it){
+    const z = d => d.toISOString().slice(0,10).replace(/-/g,'');
+    const ev = it.w.filter(w => !w.est && D(w.b) >= today).map((w,i) => {
+      const t = w.k==='conv' ? `Cierre postulación ${it.n}` : `${it.n}${w.lugar?' · '+w.lugar:''}`;
+      const a = w.k==='conv' ? D(w.b) : D(w.a);
+      const b = new Date(D(w.b).getTime() + DAY);
+      return ['BEGIN:VEVENT', `UID:${it.id}-${i}@novaudiovisual`, `DTSTAMP:${z(new Date())}T000000Z`,
+        `DTSTART;VALUE=DATE:${z(a)}`, `DTEND;VALUE=DATE:${z(b)}`, `SUMMARY:${t}`, `URL:${it.u}`,
+        'BEGIN:VALARM','TRIGGER:-P3D','ACTION:DISPLAY',`DESCRIPTION:${t}`,'END:VALARM','END:VEVENT'].join('\r\n');
+    });
+    const body = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//NOVAUDIOVISUAL//ES', ...ev, 'END:VCALENDAR'].join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([body], {type:'text/calendar'}));
+    a.download = `${it.id}.ics`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function render(){
+    $('#filters').innerHTML = FILTERS.map(([v,t]) => `<button class="chip${v===filter?' on':''}" data-f="${v}">${t}</button>`).join('');
+    renderTL(); renderCards(); icons();
+  }
+
+  $('#filters').addEventListener('click', e => {
+    const c = e.target.closest('[data-f]'); if(!c) return;
+    filter = c.dataset.f; render();
+    const u = new URL(location.href); filter==='todos' ? u.searchParams.delete('f') : u.searchParams.set('f', filter);
+    history.replaceState(null,'',u);
+  });
+  $('#grid').addEventListener('click', e => {
+    const st = e.target.closest('[data-star]');
+    if(st){
+      const id = st.dataset.star;
+      sigo = sigo.includes(id) ? sigo.filter(x => x!==id) : [...sigo, id];
+      store.set('nova_sigo', sigo); render(); return;
+    }
+    const ic = e.target.closest('[data-ics]');
+    if(ic) ics(ITEMS.find(x => x.id===ic.dataset.ics));
+  });
+  addEventListener('resize', renderTL);
+
+  $('#rev').textContent = fmt(D(REVISADO));
+  $('#yr').textContent = new Date().getFullYear();
+  renderNext(); render();
+})();
+</script>
+</body>
+</html>
