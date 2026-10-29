@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090d" />
+  <title>NOVAUDIOVISUAL · Licitaciones audiovisuales</title>
+  <meta name="description" content="Licitaciones y Compras Ágiles del Estado de Chile abiertas para servicios audiovisuales: video, streaming, fotografía y producción de eventos. Actualizado tres veces al día." />
+  <link rel="canonical" href="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-licitaciones.html" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NOVAUDIOVISUAL" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="NOVAUDIOVISUAL" />
+  <meta property="og:locale" content="es_CL" />
+  <meta property="og:title" content="NOVAUDIOVISUAL · Licitaciones audiovisuales" />
+  <meta property="og:description" content="Compras del Estado abiertas para servicios audiovisuales: video, streaming, fotografía y producción de eventos." />
+  <meta property="og:url" content="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-licitaciones.html" />
+  <meta property="og:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NOVAUDIOVISUAL · Licitaciones audiovisuales" />
+  <meta name="twitter:description" content="Compras del Estado abiertas para servicios audiovisuales: video, streaming, fotografía y producción de eventos." />
+  <meta name="twitter:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css" />
+  <script src="lucide.min.js"></script>
+  <style>
+    .hero{padding:44px 0 10px}
+    .hero h1{font-size:clamp(30px,5vw,52px); line-height:1.02; margin:12px 0 10px; font-weight:700}
+    .hero p.lead{color:var(--tx2); font-size:16px; max-width:700px; margin:0}
+    .bar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:28px 0 14px}
+    .bar .chips{display:flex; gap:6px; flex-wrap:wrap}
+    .bar input{max-width:320px}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px}
+    .op{display:flex; flex-direction:column; gap:10px; padding:18px; border-radius:16px; background:var(--panel); border:1px solid var(--line)}
+    .op h3{margin:0; font-size:16px; line-height:1.3; font-family:'Inter'; letter-spacing:0}
+    .op .org{font-size:12.5px; color:var(--tx3)}
+    .op .meta{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--tx2)}
+    .op .meta b{color:var(--tx)}
+    .op .btn{margin-top:auto; align-self:flex-start; padding:9px 14px; font-size:13px}
+    .tag.ca{background:rgba(255,179,71,.16); color:#ffd59a}
+    .tag.lic{background:rgba(155,92,255,.16); color:#c6a6ff}
+    .urg{color:#ff9a9c; font-weight:700}
+    .empty{padding:30px; text-align:center; color:var(--tx2)}
+    .nota{font-size:13px; color:var(--tx3); margin-top:18px; line-height:1.6; max-width:820px}
+    @media (max-width:520px){ .grid{grid-template-columns:minmax(0,1fr)} .bar input{max-width:none} }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="logo"><i data-lucide="clapperboard" class="icon"></i></span><span>NOVAUDIOVISUAL<small>Portal de realizadores</small></span></a>
+    <span class="rec">REC</span>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="novaudiovisual-trabajos.html">Trabajos</a>
+      <a href="novaudiovisual-fondos.html">Fondos y festivales</a>
+      <a href="novaudiovisual-licitaciones.html" class="on">Licitaciones</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="tag gob">Mercado Público · Estado de Chile</span>
+    <h1>Licitaciones <span class="grad-text">audiovisuales</span></h1>
+    <p class="lead">Compras públicas abiertas de video, streaming, fotografía y producción de eventos, encontradas en licitaciones y Compra Ágil. Se actualiza tres veces al día.</p>
+  </section>
+
+  <div class="bar">
+    <div class="chips" id="filtros"></div>
+    <input id="q" type="search" placeholder="Buscar por nombre, organismo o región" />
+  </div>
+  <div class="grid" id="lista"><div class="glass empty">Cargando…</div></div>
+  <p class="nota" id="nota"></p>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>NOVAUDIOVISUAL · Datos de Mercado Público (ChileCompra). Revisa siempre las bases oficiales antes de postular.</span>
+    <a href="index.html">Volver al inicio</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const URL_DATOS = 'https://nova-radar.simonrovi.workers.dev/public/oportunidades';
+  const $ = s => document.querySelector(s);
+  const icons = () => window.lucide && lucide.createIcons();
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const esCA = c => /-COT\d{2}$/i.test(c);
+  const ficha = c => esCA(c)
+    ? 'https://buscador.mercadopublico.cl/ficha?code=' + encodeURIComponent(c)
+    : 'https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=' + encodeURIComponent(c);
+  // Hora de Chile sin zona; quien visita el portal está en Chile
+  const fecha = s => new Date(String(s).replace(' ', 'T'));
+  const FILTROS = [['todas','Todas'],['ca','⚡ Compra Ágil'],['lic','🎬 Licitaciones']];
+  let datos = [], filtro = 'todas';
+
+  function pintar(){
+    $('#filtros').innerHTML = FILTROS.map(([k,t]) => `<button class="chip ${k===filtro?'on':''}" data-f="${k}">${t}</button>`).join('');
+    const q = norm($('#q').value);
+    const xs = datos.filter(o => (filtro === 'todas' || o.t === filtro) && (!q || norm(`${o.n} ${o.o} ${o.r}`).includes(q)))
+      .sort((a,b) => fecha(a.cierre) - fecha(b.cierre));
+    $('#lista').innerHTML = xs.length ? xs.map(o => {
+      const h = (fecha(o.cierre) - Date.now()) / 36e5;
+      const cuando = h < 48 ? `<span class="urg">Cierra en ${Math.max(1, Math.round(h))} h</span>` : `Cierra ${esc(fecha(o.cierre).toLocaleString('es-CL', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }))}`;
+      return `<article class="op">
+        <span class="tag ${o.t}">${o.t === 'ca' ? '⚡ Compra Ágil' : '🎬 Licitación'}</span>
+        <h3>${esc(o.n)}</h3>
+        <div class="org">${esc(o.o)}${o.r ? ' · ' + esc(o.r) : ''}</div>
+        <div class="meta"><span><b>${esc(o.m)}</b></span><span>${cuando}</span></div>
+        <a class="btn btn-ghost" href="${ficha(o.c)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Ver en Mercado Público</a>
+      </article>`;
+    }).join('') : `<div class="glass empty">No hay compras abiertas con ese filtro ahora. Vuelve más tarde: se actualiza tres veces al día.</div>`;
+    icons();
+  }
+
+  $('#filtros').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { filtro = b.dataset.f; pintar(); } });
+  $('#q').addEventListener('input', pintar);
+
+  fetch(URL_DATOS).then(r => r.json()).then(j => {
+    datos = (j.oportunidades || []).filter(o => fecha(o.cierre) > Date.now());
+    $('#nota').textContent = `${datos.length} compras abiertas · actualizado ${new Date(j.actualizado).toLocaleString('es-CL')} · Para postular necesitas estar inscrito como proveedor en Mercado Público.`;
+    pintar();
+  }).catch(() => { $('#lista').innerHTML = '<div class="glass empty">No pude cargar las licitaciones. Revisa tu conexión e intenta de nuevo.</div>'; });
+  icons();
+})();
+</script>
+<script>if('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body>
+</html>

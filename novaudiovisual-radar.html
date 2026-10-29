@@ -72,6 +72,13 @@
     textarea{font:inherit; color:var(--tx); background:rgba(0,0,0,.35); border:1px solid var(--line); border-radius:12px; padding:12px 14px; outline:none; width:100%; min-height:90px; resize:vertical}
     textarea:focus{border-color:var(--line2); box-shadow:0 0 0 3px rgba(255,179,71,.12)}
 
+    .regiones{display:flex; flex-wrap:wrap; gap:6px}
+    .regiones label{flex-direction:row; align-items:center; gap:6px; font-weight:500; font-size:13px; padding:6px 10px; border:1px solid var(--line); border-radius:999px; cursor:pointer}
+    .regiones input{width:auto; padding:0}
+    .est{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:6px; background:rgba(255,255,255,.06); color:var(--tx2)}
+    .est.ganada{background:rgba(90,210,140,.18); color:#8be3b1}
+    .est.perdida{background:rgba(255,94,98,.16); color:#ff9a9c}
+    .est.postulado{background:rgba(255,179,71,.16); color:#ffd59a}
     .gate{max-width:460px; margin:60px auto; padding:26px; display:flex; flex-direction:column; gap:14px}
     .gate h2{margin:0}
     .gate p{margin:0; color:var(--tx2); font-size:14px}
@@ -92,6 +99,7 @@
       <a href="index.html">Inicio</a>
       <a href="novaudiovisual-trabajos.html">Trabajos</a>
       <a href="novaudiovisual-fondos.html">Fondos y festivales</a>
+      <a href="novaudiovisual-licitaciones.html">Licitaciones</a>
       <a href="novaudiovisual-radar.html" class="on">Radar</a>
     </nav>
   </div>
@@ -117,7 +125,9 @@
     <div class="tabs" id="tabs">
       <button class="chip on" data-tab="ops"><i data-lucide="radar" class="icon"></i>Oportunidades</button>
       <button class="chip" data-tab="cal"><i data-lucide="calendar-days" class="icon"></i>Calendario</button>
+      <button class="chip" data-tab="post"><i data-lucide="send" class="icon"></i>Postulaciones</button>
       <button class="chip" data-tab="precios"><i data-lucide="badge-dollar-sign" class="icon"></i>Precios</button>
+      <button class="chip" data-tab="mercado"><i data-lucide="users" class="icon"></i>Mercado</button>
       <button class="chip" data-tab="empresa"><i data-lucide="building-2" class="icon"></i>Mi empresa</button>
     </div>
 
@@ -137,6 +147,20 @@
       <div class="cal" id="cal"></div>
     </section>
 
+    <section data-panel="post" hidden>
+      <div class="stats" id="pstats"></div>
+      <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Lo que preparaste con 🚀 Postular. Marca las que enviaste y con qué monto neto: cuando se resuelvan, el radar te avisa si ganaste o quién ganó y por cuánto.</p>
+      <div class="grid" id="paqs"></div>
+    </section>
+
+    <section data-panel="mercado" hidden>
+      <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Calculado con las Compras Ágiles audiovisuales ya resueltas del historial de precios. Montos netos ganadores.</p>
+      <div class="grid">
+        <div class="glass tbl"><table style="min-width:0"><thead><tr><th>Quién más gana</th><th>Ganadas</th><th>Mediana</th></tr></thead><tbody id="comp"></tbody></table></div>
+        <div class="glass tbl"><table style="min-width:0"><thead><tr><th>Quién más compra</th><th>Compras</th><th>Mediana</th></tr></thead><tbody id="clientes"></tbody></table></div>
+      </div>
+    </section>
+
     <section data-panel="precios" hidden>
       <div class="stats" id="stats"></div>
       <div class="bar">
@@ -148,6 +172,7 @@
 
     <section data-panel="empresa" hidden>
       <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Los borradores en Word usan solo estos datos: lo que dejes vacío aparece en amarillo como [COMPLETAR]. Con tarifas, la oferta económica sale con precios sugeridos. Ejemplo de tarifas: <i>Jornada de cámara con equipo $180.000 · Streaming multicámara (3 cámaras, 4 h) $650.000 · Edición por minuto final $25.000 · Fotografía de evento (4 h, 60 fotos) $150.000</i>.</p>
+      <form class="glass form" id="prefs" style="margin-bottom:16px"></form>
       <form class="glass form" id="perfil"></form>
     </section>
 
@@ -223,10 +248,60 @@
       [semana.length, 'encontradas en 7 días'],
       [D.hist.length, 'precios en el historial'],
     ].map(([n,t]) => `<div class="glass kpi"><div class="n">${n}</div><div class="t">${t}</div></div>`).join('');
-    pintarOps(); pintarCal(); pintarPrecios(); pintarPerfil();
+    pintarOps(); pintarCal(); pintarPost(); pintarPrecios(); pintarMercado(); pintarPrefs(); pintarPerfil();
     const m = D.meta || {};
     const run = (x, t) => x ? `${t}: ${new Date(x.fecha).toLocaleString('es-CL')} · revisadas ${x.revisadas ?? x.total} · avisadas ${x.avisadas ?? x.agregados}` : `${t}: sin corridas aún`;
-    $('#runs').innerHTML = [run(m.lic,'🎬 Licitaciones'), run(m.ca,'⚡ Compra Ágil'), run(m.hist,'💡 Precios')].map(esc).join('<br>');
+    const pc = m.pc ? `💻 Tu PC (Compra Ágil): último envío ${new Date(m.pc.fecha).toLocaleString('es-CL')}` : '💻 Tu PC (Compra Ágil): sin envíos aún';
+    $('#runs').innerHTML = [run(m.lic,'🎬 Licitaciones'), run(m.ca,'⚡ Compra Ágil'), run(m.hist,'💡 Precios'), pc].map(esc).join('<br>');
+  }
+
+  /* Postulaciones */
+  const EST = { preparado:'Preparada', postulado:'Esperando resultado', ganada:'Ganada', perdida:'Perdida', desierta:'Desierta', cancelada:'Cancelada', descartado:'No postulé' };
+  function pintarPost(){
+    const s = D.stats || {};
+    const pct = x => x === null || x === undefined ? '—' : Math.round(x * 100) + '%';
+    $('#pstats').innerHTML = [
+      [s.postuladas ?? 0, 'postuladas'], [s.ganadas ?? 0, 'ganadas'], [pct(s.tasa), 'tasa de éxito'],
+      [s.montoGanado ? pesos(s.montoGanado) : '$0', 'ganado (neto)'],
+      [s.difPromedio === null || s.difPromedio === undefined ? '—' : (s.difPromedio > 0 ? '+' : '') + Math.round(s.difPromedio * 100) + '%', 'tu precio vs. ganador (en las perdidas)'],
+    ].map(([n,t]) => `<div class="glass kpi"><div class="n">${esc(n)}</div><div class="t">${t}</div></div>`).join('');
+    const xs = (D.paqs || []).filter(p => p.estado !== 'descartado');
+    $('#paqs').innerHTML = xs.length ? xs.map(p => {
+      const res = p.estado === 'perdida' && p.ganador ? `<p>Ganó <b>${esc(p.ganador)}</b> con ${pesos(p.montoGanador)}${p.ofertas ? ` (${p.ofertas} ofertas)` : ''}.</p>` : '';
+      const acts = p.estado === 'preparado'
+        ? `<button class="btn btn-main" data-post="${esc(p.codigo)}" data-neto="${p.sugerido || ''}">✅ Postulé</button><button class="btn btn-ghost" data-nopost="${esc(p.codigo)}">No postulé</button>`
+        : p.estado === 'postulado' ? `<button class="btn btn-ghost" data-post="${esc(p.codigo)}" data-neto="${p.miNeto || ''}">Cambiar monto</button>` : '';
+      return `<article class="op">
+        <div class="head"><span class="tag ${esCA(p.codigo)?'ca':'lic'}">${esCA(p.codigo)?'⚡ Compra Ágil':'🎬 Licitación'}</span><span class="est ${p.estado}" style="margin-left:auto">${EST[p.estado] || p.estado}</span></div>
+        <h3>${esc(p.nombre)}</h3>
+        <div class="org">${esc(p.organismo || '')}</div>
+        <div class="meta"><span>Sugerido <b>${p.sugerido ? pesos(p.sugerido) : '—'}</b></span><span>Mi oferta <b>${p.miNeto ? pesos(p.miNeto) : '—'}</b></span><span>Cierre ${esc(fmt(fecha(p.cierre)))}</span></div>
+        ${res}
+        <div class="acts"><a class="btn btn-ghost" href="${ficha(p.codigo)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Ficha</a>${acts}</div>
+      </article>`;
+    }).join('') : `<div class="glass empty">Aún no preparas postulaciones. Usa 🚀 Postular en una oportunidad.</div>`;
+    icons();
+  }
+
+  /* Mercado */
+  function pintarMercado(){
+    const fila = x => `<tr><td>${esc(x.nombre)}</td><td class="num">${x.n}</td><td class="num">${pesos(x.mediana)}</td></tr>`;
+    const vacio = '<tr><td colspan="3" class="empty">Sin datos todavía.</td></tr>';
+    $('#comp').innerHTML = (D.mercado?.competidores || []).map(fila).join('') || vacio;
+    $('#clientes').innerHTML = (D.mercado?.clientes || []).map(fila).join('') || vacio;
+  }
+
+  /* Preferencias */
+  const REGIONES = ['Arica y Parinacota','Tarapacá','Antofagasta','Atacama','Coquimbo','Valparaíso','Metropolitana',"O'Higgins",'Maule','Ñuble','Biobío','Araucanía','Los Ríos','Los Lagos','Aysén','Magallanes'];
+  function pintarPrefs(){
+    const p = D.prefs || { regiones: [], montoMin: 0, excluir: '' };
+    $('#prefs').innerHTML = `<h3 style="margin:0">Preferencias de avisos</h3>
+      <label>Regiones donde trabajas<span>Si no marcas ninguna, te aviso de todo Chile.</span>
+        <div class="regiones">${REGIONES.map(r => `<label><input type="checkbox" name="regiones" value="${esc(r)}" ${p.regiones.includes(r) ? 'checked' : ''}>${esc(r)}</label>`).join('')}</div></label>
+      <label>Monto mínimo (pesos)<span>No te aviso de compras con presupuesto menor. 0 = sin mínimo.</span><input name="montoMin" type="number" min="0" step="10000" value="${p.montoMin || 0}"></label>
+      <label>Palabras que no quieres ver<span>Separadas por coma. Ej.: amplificación, pantalla led, arriendo</span><input name="excluir" value="${esc(p.excluir)}"></label>
+      <div><button class="btn btn-main" type="submit"><i data-lucide="sliders-horizontal" class="icon"></i>Guardar preferencias</button></div>`;
+    icons();
   }
 
   /* Oportunidades */
@@ -358,6 +433,27 @@
       if (b) { b.disabled = true; await call('/borrador', 'POST', { codigo: b.dataset.borrador }); toast('📝 El borrador en Word llega a tu Telegram en 1 a 3 minutos'); }
       if (p) { p.disabled = true; await call('/postular', 'POST', { codigo: p.dataset.postular }); toast('🚀 Cotización, propuesta y datos para pegar llegan a tu Telegram en 1 a 3 minutos'); }
     } catch { toast('No se pudo. Revisa tu conexión.'); }
+  });
+  $('#paqs').addEventListener('click', async e => {
+    const ok = e.target.closest('[data-post]'), no = e.target.closest('[data-nopost]');
+    try {
+      if (ok) {
+        const v = prompt('¿Con qué monto NETO postulaste? (solo números)', ok.dataset.neto || '');
+        if (v === null) return;
+        const neto = Number(String(v).replace(/[^\d]/g, ''));
+        await call('/postulacion', 'POST', { codigo: ok.dataset.post, estado: 'postulado', neto });
+        D = await call('/panel'); pintar();
+        toast('✅ Registrada: te aviso el resultado por Telegram');
+      }
+      if (no) { await call('/postulacion', 'POST', { codigo: no.dataset.nopost, estado: 'descartado' }); D = await call('/panel'); pintar(); toast('Anotado'); }
+    } catch { toast('No se pudo. Revisa tu conexión.'); }
+  });
+  $('#prefs').addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const datos = { regiones: f.getAll('regiones'), montoMin: Number(f.get('montoMin')) || 0, excluir: f.get('excluir') || '' };
+    try { const r = await call('/prefs', 'PUT', datos); D.prefs = r.prefs; toast('✅ Preferencias guardadas: se aplican desde la próxima ronda'); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
   });
   $('#perfil').addEventListener('submit', async e => {
     e.preventDefault();
