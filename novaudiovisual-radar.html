@@ -130,7 +130,9 @@
       <button class="chip" data-tab="clientes"><i data-lucide="contact" class="icon"></i>Clientes</button>
       <button class="chip" data-tab="precios"><i data-lucide="badge-dollar-sign" class="icon"></i>Precios</button>
       <button class="chip" data-tab="mercado"><i data-lucide="users" class="icon"></i>Mercado</button>
+      <button class="chip" data-tab="red"><i data-lucide="users-round" class="icon"></i>Mi red</button>
       <button class="chip" data-tab="empresa"><i data-lucide="building-2" class="icon"></i>Mi empresa</button>
+      <button class="chip" data-tab="sistema"><i data-lucide="activity" class="icon"></i>Sistema</button>
     </div>
 
     <section data-panel="ops">
@@ -159,6 +161,7 @@
 
     <section data-panel="ordenes" hidden>
       <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px" id="ordenesNota"></p>
+      <div class="stats" id="renta"></div>
       <div class="grid" id="ocs"></div>
     </section>
 
@@ -181,6 +184,24 @@
       <div class="grid">
         <div class="glass tbl"><table style="min-width:0"><thead><tr><th>Quién más gana</th><th>Ganadas</th><th>Mediana</th></tr></thead><tbody id="comp"></tbody></table></div>
         <div class="glass tbl"><table style="min-width:0"><thead><tr><th>Quién más compra</th><th>Compras</th><th>Mediana</th></tr></thead><tbody id="clientes"></tbody></table></div>
+      </div>
+      <h3 style="margin:26px 0 6px">Otras fuentes de compras</h3>
+      <p style="margin:0 0 12px;color:var(--tx2);font-size:14px;max-width:760px">Compran video fuera de Mercado Público. No tienen API, así que el radar no las revisa solo: inscríbete y revísalas de vez en cuando.</p>
+      <div class="grid" id="fuentes"></div>
+    </section>
+
+    <section data-panel="red" hidden>
+      <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Tu red privada de colaboradores: camarógrafos, editores, sonidistas, pilotos de dron… Nadie más la ve. El radar la usa en los borradores (equipo humano) y el asistente la conoce para armar equipo y estimar costos.</p>
+      <form class="glass form" id="redForm"></form>
+    </section>
+
+    <section data-panel="sistema" hidden>
+      <div class="stats" id="usoKpis"></div>
+      <div class="glass" style="padding:18px;margin-bottom:14px"><b>Escrituras por día</b> <small style="color:var(--tx3)">(plan gratis de Cloudflare: ~1.000 diarias)</small><div id="usoBarras" style="display:grid;gap:6px;margin-top:12px"></div></div>
+      <div class="glass" style="padding:18px;margin-bottom:14px"><b>Últimos errores</b><div id="errores" style="margin-top:10px;font-size:13.5px;color:var(--tx2);display:flex;flex-direction:column;gap:6px"></div></div>
+      <div class="glass" style="padding:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+        <p style="margin:0 auto 0 0;color:var(--tx2);font-size:14px;max-width:560px">Tu PC guarda un respaldo semanal en <b>privado\respaldos</b>. También puedes bajar uno ahora.</p>
+        <button class="btn btn-main" id="respaldo"><i data-lucide="download" class="icon"></i>Descargar respaldo</button>
       </div>
     </section>
 
@@ -274,7 +295,7 @@
       [D.hist.length, 'precios en el historial'],
     ].map(([n,t]) => `<div class="glass kpi"><div class="n">${n}</div><div class="t">${t}</div></div>`).join('');
     pintarOps(); pintarCal(); pintarTemporadas(); pintarPost(); pintarOrdenes(); pintarClientes(); pintarPrecios(); pintarMercado();
-    pintarPrefs(); pintarDocs(); pintarVitrina(); pintarPerfil();
+    pintarPrefs(); pintarDocs(); pintarVitrina(); pintarPerfil(); pintarRed(); pintarSistema(); pintarFuentes();
     const m = D.meta || {};
     const run = (x, t) => x ? `${t}: ${new Date(x.fecha).toLocaleString('es-CL')} · revisadas ${x.revisadas ?? x.total} · avisadas ${x.avisadas ?? x.agregados}` : `${t}: sin corridas aún`;
     const pc = m.pc ? `💻 Tu PC (Compra Ágil): último envío ${new Date(m.pc.fecha).toLocaleString('es-CL')}` : '💻 Tu PC (Compra Ágil): sin envíos aún';
@@ -296,7 +317,8 @@
       const res = p.estado === 'perdida' && p.ganador ? `<p>Ganó <b>${esc(p.ganador)}</b> con ${pesos(p.montoGanador)}${p.ofertas ? ` (${p.ofertas} ofertas)` : ''}.</p>` : '';
       const acts = p.estado === 'preparado'
         ? `<button class="btn btn-main" data-post="${esc(p.codigo)}" data-neto="${p.sugerido || ''}">✅ Postulé</button><button class="btn btn-ghost" data-nopost="${esc(p.codigo)}">No postulé</button>`
-        : p.estado === 'postulado' ? `<button class="btn btn-ghost" data-post="${esc(p.codigo)}" data-neto="${p.miNeto || ''}">Cambiar monto</button>` : '';
+        : p.estado === 'postulado' ? `<button class="btn btn-ghost" data-post="${esc(p.codigo)}" data-neto="${p.miNeto || ''}">Cambiar monto</button>`
+        : p.estado === 'ganada' ? btnCostos(p) + lineaMargen(p, p.miNeto) : '';
       return `<article class="op">
         <div class="head"><span class="tag ${esCA(p.codigo)?'ca':'lic'}">${esCA(p.codigo)?'⚡ Compra Ágil':'🎬 Licitación'}</span><span class="est ${p.estado}" style="margin-left:auto">${EST[p.estado] || p.estado}</span></div>
         <h3>${esc(p.nombre)}</h3>
@@ -322,6 +344,13 @@
     $('#ordenesNota').textContent = D.proveedorInscrito
       ? 'Órdenes de compra emitidas a NOVA AUDIOVISUAL SPA. Marca cuando factures y cuando te paguen: si pasan 30 días desde la factura sin pago, te aviso para reclamar.'
       : 'Todavía no encuentro a NOVA AUDIOVISUAL SPA como proveedor en Mercado Público. Termina la inscripción y desde ahí aparecen aquí tus órdenes de compra, con avisos de facturación y pago.';
+    const r = D.renta || { proyectos: [] };
+    $('#renta').innerHTML = r.proyectos.length ? [
+      [Math.round(r.margenPromedio * 100) + '%', 'margen promedio'],
+      [r.conPerdida, 'proyectos con pérdida'],
+      [pesos(r.pisoSugerido), `cobra al menos esto (neto) para ${Math.round(r.margenObjetivo * 100)}% de margen`],
+    ].map(([n,t]) => `<div class="glass kpi"><div class="n">${esc(n)}</div><div class="t">${esc(t)}</div></div>`).join('')
+      : '<div class="glass kpi"><div class="t">Anota los costos de cada proyecto (💲 Costos) y aquí verás tu margen real y la tarifa mínima que te conviene.</div></div>';
     const xs = D.ocs || [];
     $('#ocs').innerHTML = xs.length ? xs.map(o => {
       const dias = o.facturada && !o.pagada ? Math.floor((Date.now() - new Date(o.facturada)) / 864e5) : null;
@@ -334,8 +363,61 @@
         <div class="acts">
           <a class="btn btn-ghost" href="https://www.mercadopublico.cl/PurchaseOrder/Modules/PO/DetailsPurchaseOrder.aspx?codigoOC=${encodeURIComponent(o.codigo)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Orden</a>
           ${o.pagada ? '' : o.facturada ? `<button class="btn btn-main" data-oc="${esc(o.codigo)}" data-acc="pago">💵 Me pagaron</button>` : `<button class="btn btn-main" data-oc="${esc(o.codigo)}" data-acc="factura">🧾 Ya facturé</button>`}
-        </div></article>`;
+          ${btnCostos(o)}
+        </div>${lineaMargen(o, o.neto)}</article>`;
     }).join('') : '<div class="glass empty">Aún no hay órdenes de compra.</div>';
+    icons();
+  }
+
+  /* Costos y margen de un proyecto */
+  const btnCostos = x => `<button class="btn btn-ghost" data-costos="${esc(x.codigo)}">💲 Costos</button>`;
+  function lineaMargen(x, ingreso){
+    if (!x.costos?.length || !ingreso) return '';
+    const costo = x.costos.reduce((s, c) => s + c.monto, 0), m = ingreso - costo;
+    return `<p style="width:100%">Costos ${pesos(costo)} · margen <b style="color:${m < 0 ? '#ff9a9c' : '#8be3b1'}">${m < 0 ? '-' : ''}${pesos(Math.abs(m))} (${Math.round(m / ingreso * 100)}%)</b></p>`;
+  }
+  async function editarCostos(codigo){
+    const x = (D.ocs || []).find(o => o.codigo === codigo) || (D.paqs || []).find(p => p.codigo === codigo);
+    const actual = (x?.costos || []).map(c => `${c.concepto}: ${c.monto}`).join('\n');
+    const v = prompt('Costos netos del proyecto, uno por línea (concepto: monto)\nEj.: Camarógrafo: 120000', actual || 'Crew: \nArriendo de equipo: \nTraslados: \nEdición: ');
+    if (v === null) return;
+    const costos = v.split('\n').map(l => l.split(':')).filter(p => p.length >= 2)
+      .map(([c, ...m]) => ({ concepto: c.trim(), monto: Number(m.join(':').replace(/[^\d]/g, '')) })).filter(c => c.concepto && c.monto);
+    try { await call('/costos', 'POST', { codigo, costos }); D = await call('/panel'); pintar(); toast('✅ Costos guardados'); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('[data-costos]'); if (b) editarCostos(b.dataset.costos); });
+
+  /* Mi red */
+  function pintarRed(){
+    const filas = (D.red || []).concat([{}, {}]);
+    $('#redForm').innerHTML = `<div class="glass tbl" style="background:none;border:0"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Región</th><th>Contacto</th><th>Tarifa</th><th>Notas</th></tr></thead><tbody>
+      ${filas.map(c => `<tr>${['nombre','rol','region','contacto','tarifa','notas'].map(k => `<td style="padding:6px"><input name="${k}" value="${esc(c[k] || '')}" style="padding:8px 10px"></td>`).join('')}</tr>`).join('')}
+      </tbody></table></div>
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Para agregar más filas, guarda y aparecen dos nuevas. Para borrar a alguien, deja su nombre vacío.</p>
+      <div><button class="btn btn-main" type="submit"><i data-lucide="save" class="icon"></i>Guardar mi red</button></div>`;
+    icons();
+  }
+
+  /* Sistema */
+  function pintarSistema(){
+    const s = D.salud || { uso: [], errores: [], limite: 1000 };
+    const hoy = s.uso[0]?.escrituras || 0;
+    const pc = D.meta?.pc ? Math.round((Date.now() - new Date(D.meta.pc.fecha)) / 36e5) : null;
+    $('#usoKpis').innerHTML = [
+      [`${hoy} / ${s.limite}`, 'escrituras hoy (aprox.)'],
+      [s.errores.length ? new Date(s.errores[0].fecha).toLocaleDateString('es-CL') : '—', 'último error'],
+      [pc === null ? '—' : pc < 24 ? 'OK' : `${pc} h`, 'tu PC (Compra Ágil): último envío'],
+    ].map(([n,t]) => `<div class="glass kpi"><div class="n">${esc(n)}</div><div class="t">${esc(t)}</div></div>`).join('');
+    $('#usoBarras').innerHTML = s.uso.slice().reverse().map(u => `<div style="display:grid;grid-template-columns:92px 1fr 52px;gap:8px;align-items:center;font-size:12.5px">
+      <span style="color:var(--tx3)">${esc(u.dia)}</span><span style="height:10px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden"><span style="display:block;height:100%;width:${Math.min(100, u.escrituras / s.limite * 100)}%;background:${u.escrituras > s.limite * .8 ? 'var(--rec)' : 'var(--grad)'}"></span></span><span style="text-align:right">${u.escrituras}</span></div>`).join('');
+    $('#errores').innerHTML = s.errores.length ? s.errores.slice(0, 8).map(e => `<div><b>${esc(e.donde)}</b> · ${esc(new Date(e.fecha).toLocaleString('es-CL'))}<br><small>${esc(e.msg)}</small></div>`).join('') : 'Sin errores registrados. 👌';
+  }
+
+  /* Otras fuentes */
+  function pintarFuentes(){
+    $('#fuentes').innerHTML = (D.otrasFuentes || []).map(f => `<article class="op"><h3>${esc(f.nombre)}</h3><p>${esc(f.como)}</p>
+      <div class="acts"><a class="btn btn-ghost" href="${esc(f.url)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Abrir</a></div></article>`).join('');
     icons();
   }
 
@@ -574,6 +656,20 @@
     location.href = `mailto:${encodeURIComponent(para)}?subject=${encodeURIComponent($('#correoAsunto').value)}&body=${encodeURIComponent($('#correoCuerpo').value)}`;
   });
   $('#correoCerrar').addEventListener('click', () => { $('#correoBox').hidden = true; });
+  $('#redForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const red = [...e.target.querySelectorAll('tbody tr')].map(tr => Object.fromEntries([...tr.querySelectorAll('input')].map(i => [i.name, i.value.trim()]))).filter(c => c.nombre);
+    try { const r = await call('/red', 'PUT', { red }); D.red = r.red; pintarRed(); toast(`✅ Red guardada (${r.red.length})`); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
+  });
+  $('#respaldo').addEventListener('click', async () => {
+    try {
+      const datos = await call('/respaldo');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(datos, null, 1)], { type: 'application/json' }));
+      a.download = `radar-novaudiovisual-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+    } catch { toast('No se pudo descargar. Revisa tu conexión.'); }
+  });
   $('#docs').addEventListener('submit', async e => {
     e.preventDefault();
     const nombres = [...e.target.querySelectorAll('[name=nombre]')], fechas = [...e.target.querySelectorAll('[name=vence]')];
