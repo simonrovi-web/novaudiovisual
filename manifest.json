@@ -17,6 +17,8 @@
     { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
+    { "name": "Radar de licitaciones", "url": "./novaudiovisual-radar.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Oportunidades públicas", "url": "./novaudiovisual-licitaciones.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Buscar trabajos", "url": "./novaudiovisual-trabajos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Fondos y festivales", "url": "./novaudiovisual-fondos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
