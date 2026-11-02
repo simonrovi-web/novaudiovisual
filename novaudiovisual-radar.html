@@ -126,6 +126,7 @@
       <button class="chip on" data-tab="ops"><i data-lucide="radar" class="icon"></i>Oportunidades</button>
       <button class="chip" data-tab="cal"><i data-lucide="calendar-days" class="icon"></i>Calendario</button>
       <button class="chip" data-tab="post"><i data-lucide="send" class="icon"></i>Postulaciones</button>
+      <button class="chip" data-tab="exp"><i data-lucide="award" class="icon"></i>Experiencia</button>
       <button class="chip" data-tab="ordenes"><i data-lucide="receipt" class="icon"></i>Órdenes</button>
       <button class="chip" data-tab="clientes"><i data-lucide="contact" class="icon"></i>Clientes</button>
       <button class="chip" data-tab="precios"><i data-lucide="badge-dollar-sign" class="icon"></i>Precios</button>
@@ -136,6 +137,7 @@
     </div>
 
     <section data-panel="ops">
+      <div id="top"></div>
       <div class="bar">
         <div class="chips" id="fOps"></div>
         <input id="qOps" type="search" placeholder="Buscar por nombre u organismo" />
@@ -157,6 +159,11 @@
       <div class="stats" id="pstats"></div>
       <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Lo que preparaste con 🚀 Postular. Marca las que enviaste y con qué monto neto: cuando se resuelvan, el radar te avisa si ganaste o quién ganó y por cuánto.</p>
       <div class="grid" id="paqs"></div>
+    </section>
+
+    <section data-panel="exp" hidden>
+      <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Tus trabajos acreditables: muchas compras exigen experiencia con factura u orden de compra <b>y un certificado firmado del cliente</b>. Cárgalos una vez y el radar los pone solos en los anexos, te avisa en las bases si te falta experiencia y te arma el certificado ya completado para que el cliente solo firme y timbre.</p>
+      <form class="glass form" id="expForm"></form>
     </section>
 
     <section data-panel="ordenes" hidden>
@@ -218,6 +225,7 @@
       <p style="margin:0 0 14px;color:var(--tx2);font-size:14px;max-width:760px">Los borradores en Word usan solo estos datos: lo que dejes vacío aparece en amarillo como [COMPLETAR]. Con tarifas, la oferta económica sale con precios sugeridos. Ejemplo de tarifas: <i>Jornada de cámara con equipo $180.000 · Streaming multicámara (3 cámaras, 4 h) $650.000 · Edición por minuto final $25.000 · Fotografía de evento (4 h, 60 fotos) $150.000</i>.</p>
       <form class="glass form" id="prefs" style="margin-bottom:16px"></form>
       <form class="glass form" id="docs" style="margin-bottom:16px"></form>
+      <form class="glass form" id="arriendos" style="margin-bottom:16px"></form>
       <form class="glass form" id="vitrina" style="margin-bottom:16px"></form>
       <form class="glass form" id="perfil"></form>
     </section>
@@ -296,6 +304,7 @@
     ].map(([n,t]) => `<div class="glass kpi"><div class="n">${n}</div><div class="t">${t}</div></div>`).join('');
     pintarOps(); pintarCal(); pintarTemporadas(); pintarPost(); pintarOrdenes(); pintarClientes(); pintarPrecios(); pintarMercado();
     pintarPrefs(); pintarDocs(); pintarVitrina(); pintarPerfil(); pintarRed(); pintarSistema(); pintarFuentes();
+    pintarTop(); pintarExp(); pintarArriendos();
     const m = D.meta || {};
     const run = (x, t) => x ? `${t}: ${new Date(x.fecha).toLocaleString('es-CL')} · revisadas ${x.revisadas ?? x.total} · avisadas ${x.avisadas ?? x.agregados}` : `${t}: sin corridas aún`;
     const pc = m.pc ? `💻 Tu PC (Compra Ágil): último envío ${new Date(m.pc.fecha).toLocaleString('es-CL')}` : '💻 Tu PC (Compra Ágil): sin envíos aún';
@@ -399,6 +408,70 @@
     icons();
   }
 
+  /* Top del día */
+  function pintarTop(){
+    const xs = D.top || [];
+    $('#top').innerHTML = xs.length ? `<div class="glass" style="padding:18px;margin-bottom:16px"><b>☀️ Top ${xs.length} de hoy</b> <small style="color:var(--tx3)">calce, tu región, presupuesto y cierre (también llega a Telegram a las 07:40)</small>
+      <ol style="margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:8px">${xs.map(o => `<li><a href="${ficha(o.c)}" target="_blank" rel="noopener"><b>${esc(o.n)}</b></a><br><small>${esc(o.o)} · ${esc(o.m)} · cierra ${esc(fmt(fecha(o.cierre)))} · ${esc(o.motivos.join(' · '))}</small>
+      <button class="btn btn-main" style="padding:6px 12px;font-size:13px;margin-left:6px" data-postular="${esc(o.c)}">🚀 Postular</button></li>`).join('')}</ol></div>` : '';
+  }
+  $('#top').addEventListener('click', async e => {
+    const p = e.target.closest('[data-postular]'); if (!p) return;
+    p.disabled = true;
+    try { await call('/postular', 'POST', { codigo: p.dataset.postular }); toast('🚀 Cotización, propuesta y anexos llegan a tu Telegram en 1 a 3 minutos'); }
+    catch { toast('No se pudo. Revisa tu conexión.'); p.disabled = false; }
+  });
+
+  /* Experiencia */
+  const EXP = [['servicio','Servicio prestado','Streaming 3 cámaras Cuenta Pública…'],['fecha','Fecha','2025-04-20'],['cliente','Cliente','Municipalidad de…'],['rutCliente','RUT cliente',''],['factura','N° factura / OC',''],['firmante','Quién firma',''],['cargo','Cargo',''],['contacto','Contacto','correo o teléfono']];
+  function pintarExp(){
+    const filas = (D.experiencia || []).concat([{}, {}]);
+    const n = (D.experiencia || []).length, c = (D.experiencia || []).filter(e => e.certificado).length;
+    $('#expForm').innerHTML = `<p style="margin:0;font-size:14px"><b>${n}</b> trabajos cargados · <b>${c}</b> con certificado firmado${n > c ? ` · <span class="urg">${n - c} sin certificado: descárgalo ya completado y pídele al cliente que lo firme</span>` : ''}</p>
+      <div class="glass tbl" style="background:none;border:0"><table><thead><tr>${EXP.map(([, t]) => `<th>${t}</th>`).join('')}<th>Certificado firmado</th><th></th></tr></thead><tbody>
+      ${filas.map(e => `<tr data-id="${esc(e.id || '')}">${EXP.map(([k, , ph]) => `<td style="padding:6px"><input name="${k}" value="${esc(e[k] || '')}" placeholder="${esc(ph)}" style="padding:8px 10px;min-width:${k === 'servicio' ? 220 : 110}px"></td>`).join('')}
+        <td style="padding:6px;text-align:center"><input type="checkbox" name="certificado" style="width:auto" ${e.certificado ? 'checked' : ''}></td>
+        <td style="padding:6px">${e.id ? `<button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12.5px" data-cert="${esc(e.id)}">📄 Certificado</button>` : ''}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Guarda para que aparezcan filas nuevas y el botón del certificado. Para borrar un trabajo, deja vacío el servicio. Las facturas deben estar a nombre de NOVA AUDIOVISUAL SPA.</p>
+      <div><button class="btn btn-main" type="submit"><i data-lucide="save" class="icon"></i>Guardar experiencia</button></div>`;
+    icons();
+  }
+  $('#expForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const experiencia = [...e.target.querySelectorAll('tbody tr')].map(tr => ({ id: tr.dataset.id, ...Object.fromEntries([...tr.querySelectorAll('input:not([type=checkbox])')].map(i => [i.name, i.value.trim()])), certificado: tr.querySelector('[name=certificado]').checked })).filter(x => x.servicio && x.cliente);
+    try { const r = await call('/experiencia', 'PUT', { experiencia }); D.experiencia = r.experiencia; pintarExp(); toast(`✅ Experiencia guardada (${r.experiencia.length})`); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
+  });
+  $('#expForm').addEventListener('click', async e => {
+    const b = e.target.closest('[data-cert]'); if (!b) return;
+    try {
+      const r = await fetch(API + '/certificado', { method: 'POST', headers: { Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.dataset.cert }) });
+      if (!r.ok) throw 0;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(await r.blob()); a.download = `certificado-${b.dataset.cert}.docx`; a.click();
+      toast('📄 Certificado descargado: complétalo si falta algo y envíalo al cliente');
+    } catch { toast('No se pudo descargar. Guarda primero la experiencia.'); }
+  });
+
+  /* Arriendos */
+  function pintarArriendos(){
+    const filas = (D.arriendos || []).concat([{}, {}]);
+    $('#arriendos').innerHTML = `<h3 style="margin:0">Arriendos y costos por día</h3>
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Lo que arriendas cuando una compra lo pide. Con 🚀 Postular, el radar busca estas palabras en lo que piden, multiplica por los días de servicio y te muestra el margen antes de elegir el precio. Montos netos por día.</p>
+      <div class="glass tbl" style="background:none;border:0"><table style="min-width:0"><thead><tr><th>Ítem</th><th>Costo por día</th><th>Palabras que lo activan (separadas por coma)</th></tr></thead><tbody>
+      ${filas.map(a => `<tr><td style="padding:6px"><input name="item" value="${esc(a.item || '')}" style="padding:8px 10px"></td><td style="padding:6px"><input name="costoDia" type="number" min="0" step="1000" value="${a.costoDia || ''}" style="padding:8px 10px"></td><td style="padding:6px"><input name="palabras" value="${esc(a.palabras || '')}" style="padding:8px 10px"></td></tr>`).join('')}
+      </tbody></table></div>
+      <div><button class="btn btn-main" type="submit"><i data-lucide="save" class="icon"></i>Guardar arriendos</button></div>`;
+    icons();
+  }
+  $('#arriendos').addEventListener('submit', async e => {
+    e.preventDefault();
+    const arriendos = [...e.target.querySelectorAll('tbody tr')].map(tr => Object.fromEntries([...tr.querySelectorAll('input')].map(i => [i.name, i.value.trim()]))).filter(a => a.item);
+    try { const r = await call('/arriendos', 'PUT', { arriendos }); D.arriendos = r.arriendos; pintarArriendos(); toast('✅ Arriendos guardados'); }
+    catch { toast('No se pudo guardar. Revisa tu conexión.'); }
+  });
+
   /* Sistema */
   function pintarSistema(){
     const s = D.salud || { uso: [], errores: [], limite: 1000 };
@@ -438,10 +511,11 @@
   function pintarDocs(){
     const docs = D.docs || [];
     $('#docs').innerHTML = `<h3 style="margin:0">Documentos que vencen</h3>
-      <p style="margin:0;color:var(--tx3);font-size:12.5px">Pon la fecha de vencimiento y te aviso por Telegram 30, 7 y 1 día antes. Deja la fecha vacía si no aplica.</p>
-      ${docs.concat([{ id:'', nombre:'', vence:'' }]).map((d, i) => `<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:8px">
+      <p style="margin:0;color:var(--tx3);font-size:12.5px">Pon la fecha de vencimiento y te aviso por Telegram 30, 7 y 1 día antes. Marca <b>Lo tengo</b> en los que ya tienes (la carta de transferencia no vence). El radar los cruza con lo que piden las bases.</p>
+      ${docs.concat([{ id:'', nombre:'', vence:'' }]).map((d, i) => `<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px 96px;gap:8px;align-items:center">
         <input name="nombre" data-i="${i}" data-id="${esc(d.id)}" value="${esc(d.nombre)}" placeholder="Otro documento…">
-        <input name="vence" data-i="${i}" type="date" value="${esc(d.vence)}"></div>`).join('')}
+        <input name="vence" data-i="${i}" type="date" value="${esc(d.vence)}">
+        <label style="flex-direction:row;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="listo" data-i="${i}" style="width:auto" ${d.listo ? 'checked' : ''}>Lo tengo</label></div>`).join('')}
       <div><button class="btn btn-main" type="submit"><i data-lucide="calendar-clock" class="icon"></i>Guardar documentos</button></div>`;
     icons();
   }
@@ -582,10 +656,11 @@
     equipo: 'Personas y roles: director, camarógrafos, editor, sonidista…',
     equipamiento: 'Cámaras, switcher, audio, luces, drones, encoder de streaming…',
     tarifas: 'Precios netos base, uno por línea. El borrador los usa para sugerir montos.',
+    direccion: 'Va en los anexos de datos del proveedor.', telefono: 'Va en los anexos.', correo: 'Correo para las ofertas y los anexos.',
   };
   function pintarPerfil(){
     $('#perfil').innerHTML = Object.entries(D.campos).map(([k,t]) =>
-      `<label>${esc(t)}${AYUDAS[k] ? `<span>${esc(AYUDAS[k])}</span>` : ''}<textarea name="${k}" rows="${k==='tarifas'||k==='experiencia'?6:3}">${esc(D.perfil[k] || '')}</textarea></label>`).join('') +
+      `<label>${esc(t)}${AYUDAS[k] ? `<span>${esc(AYUDAS[k])}</span>` : ''}<textarea name="${k}" rows="${k==='tarifas'||k==='experiencia'?6:['direccion','telefono','correo'].includes(k)?1:3}">${esc(D.perfil[k] || '')}</textarea></label>`).join('') +
       `<div><button class="btn btn-main" type="submit"><i data-lucide="save" class="icon"></i>Guardar ficha</button></div>`;
     icons();
   }
@@ -672,8 +747,8 @@
   });
   $('#docs').addEventListener('submit', async e => {
     e.preventDefault();
-    const nombres = [...e.target.querySelectorAll('[name=nombre]')], fechas = [...e.target.querySelectorAll('[name=vence]')];
-    const docs = nombres.map((n, i) => ({ id: n.dataset.id || 'd' + Date.now().toString(36) + i, nombre: n.value.trim(), vence: fechas[i].value })).filter(d => d.nombre);
+    const nombres = [...e.target.querySelectorAll('[name=nombre]')], fechas = [...e.target.querySelectorAll('[name=vence]')], listos = [...e.target.querySelectorAll('[name=listo]')];
+    const docs = nombres.map((n, i) => ({ id: n.dataset.id || 'd' + Date.now().toString(36) + i, nombre: n.value.trim(), vence: fechas[i].value, listo: listos[i].checked })).filter(d => d.nombre);
     try { const r = await call('/docs', 'PUT', { docs }); D.docs = r.docs; pintarDocs(); toast('✅ Documentos guardados'); }
     catch { toast('No se pudo guardar. Revisa tu conexión.'); }
   });
