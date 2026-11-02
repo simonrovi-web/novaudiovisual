@@ -413,13 +413,15 @@
     const xs = D.top || [];
     $('#top').innerHTML = xs.length ? `<div class="glass" style="padding:18px;margin-bottom:16px"><b>☀️ Top ${xs.length} de hoy</b> <small style="color:var(--tx3)">calce, tu región, presupuesto y cierre (también llega a Telegram a las 07:40)</small>
       <ol style="margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:8px">${xs.map(o => `<li><a href="${ficha(o.c)}" target="_blank" rel="noopener"><b>${esc(o.n)}</b></a><br><small>${esc(o.o)} · ${esc(o.m)} · cierra ${esc(fmt(fecha(o.cierre)))} · ${esc(o.motivos.join(' · '))}</small>
-      <button class="btn btn-main" style="padding:6px 12px;font-size:13px;margin-left:6px" data-postular="${esc(o.c)}">🚀 Postular</button></li>`).join('')}</ol></div>` : '';
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:13px;margin-left:6px" data-detalle="${esc(o.c)}">📋 Detalles</button><button class="btn btn-main" style="padding:6px 12px;font-size:13px;margin-left:6px" data-postular="${esc(o.c)}">🚀 Postular</button></li>`).join('')}</ol></div>` : '';
   }
   $('#top').addEventListener('click', async e => {
-    const p = e.target.closest('[data-postular]'); if (!p) return;
-    p.disabled = true;
-    try { await call('/postular', 'POST', { codigo: p.dataset.postular }); toast('🚀 Cotización, propuesta y anexos llegan a tu Telegram en 1 a 3 minutos'); }
-    catch { toast('No se pudo. Revisa tu conexión.'); p.disabled = false; }
+    const p = e.target.closest('[data-postular]'), d = e.target.closest('[data-detalle]'); if (!p && !d) return;
+    const b = p || d; b.disabled = true;
+    try {
+      if (d) { await call('/detalle', 'POST', { codigo: d.dataset.detalle }); toast('📋 El detalle del trabajo llega a tu Telegram y a tu correo en 1 a 2 minutos'); }
+      else { await call('/postular', 'POST', { codigo: p.dataset.postular }); toast('🚀 Primero el detalle; luego cotización, propuesta y anexos en tu Telegram (1 a 3 minutos)'); }
+    } catch { toast('No se pudo. Revisa tu conexión.'); b.disabled = false; }
   });
 
   /* Experiencia */
@@ -586,6 +588,7 @@
         <div class="acts">
           <a class="btn btn-ghost" href="${ficha(o.c)}" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i>Ficha</a>
           <button class="btn btn-ghost" data-seguir="${esc(o.c)}">${on ? '★ Siguiendo' : '☆ Seguir'}</button>
+          <button class="btn btn-ghost" data-detalle="${esc(o.c)}"><i data-lucide="clipboard-list" class="icon"></i>Detalles</button>
           <button class="btn btn-ghost" data-borrador="${esc(o.c)}"><i data-lucide="file-text" class="icon"></i>Borrador</button>
           <button class="btn btn-main" data-postular="${esc(o.c)}"><i data-lucide="rocket" class="icon"></i>Postular</button>
         </div>
@@ -679,7 +682,7 @@
   $('#qHist').addEventListener('input', pintarPrecios);
   $('#ics').addEventListener('click', ics);
   $('#ops').addEventListener('click', async e => {
-    const s = e.target.closest('[data-seguir]'), b = e.target.closest('[data-borrador]'), p = e.target.closest('[data-postular]');
+    const s = e.target.closest('[data-seguir]'), b = e.target.closest('[data-borrador]'), p = e.target.closest('[data-postular]'), d = e.target.closest('[data-detalle]');
     try {
       if (s) {
         const c = s.dataset.seguir, on = !sigoSet().has(c), o = D.ops.find(x => x.c === c);
@@ -687,6 +690,7 @@
         if (on) D.seguidas.push({ codigo: c, nombre: o?.n, cierre: o?.cierre }); else D.seguidas = D.seguidas.filter(f => f.codigo !== c);
         pintar(); toast(on ? '★ Siguiendo: te aviso por Telegram antes del cierre' : 'Dejaste de seguirla');
       }
+      if (d) { d.disabled = true; await call('/detalle', 'POST', { codigo: d.dataset.detalle }); toast('📋 El detalle del trabajo llega a tu Telegram y a tu correo en 1 a 2 minutos'); }
       if (b) { b.disabled = true; await call('/borrador', 'POST', { codigo: b.dataset.borrador }); toast('📝 El borrador en Word llega a tu Telegram en 1 a 3 minutos'); }
       if (p) { p.disabled = true; await call('/postular', 'POST', { codigo: p.dataset.postular }); toast('🚀 Cotización, propuesta y datos para pegar llegan a tu Telegram en 1 a 3 minutos'); }
     } catch { toast('No se pudo. Revisa tu conexión.'); }
