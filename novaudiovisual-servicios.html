@@ -48,6 +48,11 @@
     .contacto p{margin:0 auto 0 0; color:var(--tx2); font-size:14px; max-width:520px}
     .gob{margin-top:14px; font-size:13px; color:var(--tx3)}
     .empty{padding:40px; text-align:center; color:var(--tx2)}
+    .trabajo{display:flex; flex-direction:column; gap:10px; padding:12px; border-radius:16px}
+    .trabajo .video{border-radius:10px}
+    .trabajo h3{margin:4px 4px 0; font-size:16px; line-height:1.3; font-family:'Inter'; letter-spacing:0}
+    .trabajo .meta{margin:0 4px; font-size:12.5px; color:var(--tx3)}
+    .trabajo p{margin:0 4px 4px; font-size:14px; color:var(--tx2); line-height:1.5}
     @media (max-width:520px){ .videos{grid-template-columns:minmax(0,1fr)} }
   </style>
 </head>
@@ -91,9 +96,13 @@
     return m ? `https://player.vimeo.com/video/${m[1]}` : null;
   }
 
-  function pintar(v){
+  // v = vitrina del radar (puede venir sin publicar); trabajos = portafolio.json con título y descripción
+  function pintar(v, trabajos){
+    v = v.publicar ? v : { titulo: 'NOVAUDIOVISUAL · Productora audiovisual', bajada: 'Videos de todo tipo, streaming multicámara, fotografía, realidad virtual con Unreal Engine y sets virtuales.' };
     const servicios = String(v.servicios || '').split('\n').map(s => s.trim()).filter(Boolean);
-    const videos = (v.videos || []).map(embed).filter(Boolean);
+    const conDescripcion = new Set(trabajos.map(t => embed(t.youtube || '')).filter(Boolean));
+    const videos = (v.videos || []).map(embed).filter(src => src && !conDescripcion.has(src));
+    const tarjetas = trabajos.map(t => ({ ...t, src: embed(t.youtube || '') })).filter(t => t.src);
     const wa = String(v.telefono || '').replace(/[^\d]/g, '');
     const ig = String(v.instagram || '').replace(/^@/, '').replace(/[^\w.]/g, '');
     $('#main').innerHTML = `
@@ -104,7 +113,12 @@
         <p class="gob">✔ Proveedor del Estado: cotizamos por Compra Ágil y licitaciones en Mercado Público.</p>
       </section>
       ${servicios.length ? `<h2>Servicios</h2><div class="servicios">${servicios.map(s => `<div class="glass serv"><span class="ico"><i data-lucide="${ico(s)}" class="icon"></i></span><b>${esc(s)}</b></div>`).join('')}</div>` : ''}
-      ${videos.length ? `<h2>Portafolio</h2><div class="videos">${videos.map(src => `<div class="video"><iframe src="${src}" title="Video del portafolio" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`).join('')}</div>` : ''}
+      ${tarjetas.length || videos.length ? `<h2>Trabajos realizados</h2><div class="videos">${tarjetas.map(t => `<article class="glass trabajo">
+          <div class="video"><iframe src="${t.src}" title="${esc(t.titulo || 'Trabajo realizado')}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+          <h3>${esc(t.titulo || '')}</h3>
+          ${[t.cliente, t.tipo, t.anio].filter(Boolean).length ? `<div class="meta">${[t.cliente, t.tipo, t.anio].filter(Boolean).map(esc).join(' · ')}</div>` : ''}
+          ${t.descripcion ? `<p>${esc(t.descripcion)}</p>` : ''}
+        </article>`).join('')}${videos.map(src => `<div class="video"><iframe src="${src}" title="Video del portafolio" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`).join('')}</div>` : ''}
       <h2>Contacto</h2>
       <div class="glass contacto">
         <p>Cuéntanos qué necesitas: te enviamos una cotización formal, también por Compra Ágil.</p>
@@ -115,10 +129,13 @@
     icons();
   }
 
-  fetch('https://nova-radar.simonrovi.workers.dev/public/vitrina').then(r => r.json()).then(v => {
-    if (v.publicar) pintar(v);
+  Promise.all([
+    fetch('https://nova-radar.simonrovi.workers.dev/public/vitrina').then(r => r.json()).catch(() => ({})),
+    fetch('portafolio.json', { cache: 'no-cache' }).then(r => r.json()).then(p => p.trabajos || []).catch(() => []),
+  ]).then(([v, trabajos]) => {
+    if (v.publicar || trabajos.length) pintar(v, trabajos);
     else $('#main').innerHTML = '<div class="glass empty" style="margin-top:60px">Estamos preparando esta página. Vuelve pronto.</div>';
-  }).catch(() => { $('#main').innerHTML = '<div class="glass empty" style="margin-top:60px">No pude cargar la página. Revisa tu conexión.</div>'; });
+  });
   icons();
 })();
 </script>
