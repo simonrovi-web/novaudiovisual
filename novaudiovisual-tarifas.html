@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090d" />
+  <title>NOVAUDIOVISUAL · Calculadora de tarifas</title>
+  <meta name="description" content="Arma el presupuesto de tu rodaje: equipo por rol y jornada, horas extra, equipos, imprevistos y boleta de honorarios o factura. Exporta a PDF o compártelo por WhatsApp." />
+  <link rel="canonical" href="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-tarifas.html" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NOVAUDIOVISUAL" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="NOVAUDIOVISUAL" />
+  <meta property="og:locale" content="es_CL" />
+  <meta property="og:title" content="NOVAUDIOVISUAL · Calculadora de tarifas" />
+  <meta property="og:description" content="Arma tu presupuesto audiovisual por rol, jornada y horas extra, con boleta de honorarios o factura." />
+  <meta property="og:url" content="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-tarifas.html" />
+  <meta property="og:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NOVAUDIOVISUAL · Calculadora de tarifas" />
+  <meta name="twitter:description" content="Arma tu presupuesto audiovisual por rol, jornada y horas extra, con boleta de honorarios o factura." />
+  <meta name="twitter:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css" />
+  <script src="lucide.min.js"></script>
+  <style>
+    .hero{padding:44px 0 10px}
+    .hero h1{font-size:clamp(30px,5vw,52px); line-height:1.02; margin:12px 0 10px; font-weight:700}
+    .hero p.lead{color:var(--tx2); font-size:16px; max-width:720px; margin:0}
+    .presets{display:flex; gap:6px; flex-wrap:wrap; margin:24px 0 18px; align-items:center}
+    .presets .lbl{font-size:13px; color:var(--tx3); margin-right:4px}
+    .layout{display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:18px; align-items:start}
+    .box{padding:20px; margin-bottom:16px}
+    .box h2{font-size:18px; margin:0 0 14px; display:flex; align-items:center; gap:8px}
+    .box h2 .sub{margin-left:auto; font:500 13px 'Inter'; color:var(--tx3); letter-spacing:0}
+    .fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px}
+    label.f{display:flex; flex-direction:column; gap:6px; font-size:12px; color:var(--tx3); font-weight:600; letter-spacing:.02em}
+    input,select{padding:10px 12px; font-size:14px}
+    input[type=number]{-moz-appearance:textfield}
+    input[type=number]::-webkit-inner-spin-button{opacity:.4}
+    .row{display:grid; gap:8px; align-items:end; padding:10px 0; border-top:1px solid var(--line)}
+    .row:first-of-type{border-top:0}
+    .crew .row{grid-template-columns:minmax(150px,2fr) 80px minmax(110px,1fr) 80px minmax(100px,1fr) 34px}
+    .gear .row{grid-template-columns:minmax(150px,2fr) 80px 80px minmax(110px,1fr) minmax(100px,1fr) 34px}
+    .row .tot{font:600 15px 'Space Grotesk'; text-align:right; padding:10px 0; white-space:nowrap}
+    .row .del{width:34px; height:40px; border-radius:10px; border:1px solid var(--line); background:transparent; color:var(--tx3); cursor:pointer; display:grid; place-items:center}
+    .row .del:hover{color:var(--coral); border-color:rgba(255,94,98,.4)}
+    .row label.f span{white-space:nowrap}
+    .hd{display:none}
+    .add{margin-top:10px; padding:9px 14px; font-size:13px}
+    .resumen{position:sticky; top:80px; padding:20px}
+    .resumen h2{font-size:18px; margin:0 0 14px}
+    .ln{display:flex; justify-content:space-between; gap:10px; padding:7px 0; font-size:14px; color:var(--tx2)}
+    .ln b{color:var(--tx); font-weight:600; white-space:nowrap}
+    .ln.sep{border-top:1px solid var(--line); margin-top:6px; padding-top:12px}
+    .ln.big{font-size:15px; color:var(--tx)}
+    .ln.big b{font:700 24px 'Space Grotesk'}
+    .ln.neg b{color:#ff9a9c}
+    .ln.liq b{color:#8be3b1; font:700 18px 'Space Grotesk'}
+    .mini{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0}
+    .seg{display:flex; gap:4px; flex-wrap:wrap; margin:4px 0 10px}
+    .seg .chip{padding:6px 11px; font-size:12.5px}
+    .chk{display:flex; gap:8px; align-items:flex-start; font-size:13px; color:var(--tx2); margin:6px 0 4px; cursor:pointer}
+    .chk input{width:auto; margin-top:2px; accent-color:var(--coral)}
+    .acc{display:flex; flex-direction:column; gap:8px; margin-top:16px}
+    .acc .btn{width:100%}
+    .nota{font-size:12.5px; color:var(--tx3); line-height:1.6; margin-top:14px}
+    .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:var(--panel2); border:1px solid var(--line2); color:var(--tx); padding:11px 18px; border-radius:12px; font-size:14px; opacity:0; pointer-events:none; transition:all .25s; z-index:90}
+    .toast.on{opacity:1; transform:translateX(-50%)}
+    .print-only{display:none}
+    @media (max-width:980px){ .layout{grid-template-columns:minmax(0,1fr)} .resumen{position:static} }
+    @media (max-width:720px){
+      .crew .row,.gear .row{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px 8px; padding:14px 0}
+      .row .rol{grid-column:1/-1}
+      .row label.f span{white-space:normal; font-size:11px}
+      .row .tot{text-align:left; grid-column:1/3; padding:4px 0}
+      .row .del{justify-self:end; grid-column:3; height:34px}
+    }
+    @media print{
+      @page{margin:14mm}
+      body{background:#fff !important; color:#111}
+      .topbar,.presets,.hero,.resumen .acc,.add,.del,footer.foot,.toast,.no-print{display:none !important}
+      .glass{background:#fff; border:1px solid #ddd; backdrop-filter:none}
+      .layout{display:block}
+      .resumen{position:static}
+      input,select{border:0; background:transparent; color:#111; padding:2px 0; box-shadow:none; appearance:none; -webkit-appearance:none}
+      label.f,.ln,.nota{color:#444}
+      .ln b,.ln.big b{color:#111}
+      .ln.neg b{color:#b00}.ln.liq b{color:#070}
+      .print-only{display:block}
+      .print-only h1{font:700 24px 'Space Grotesk'; margin:0 0 4px}
+      .print-only p{margin:0 0 16px; color:#555; font-size:13px}
+      .box,.resumen{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="logo"><i data-lucide="clapperboard" class="icon"></i></span><span>NOVAUDIOVISUAL<small>Portal de realizadores</small></span></a>
+    <span class="rec">REC</span>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="novaudiovisual-trabajos.html">Trabajos</a>
+      <a href="novaudiovisual-fondos.html">Fondos y festivales</a>
+      <a href="novaudiovisual-licitaciones.html">Licitaciones</a>
+      <a href="novaudiovisual-tarifas.html" class="on">Tarifas</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="tag cl">Herramienta gratuita</span>
+    <h1>Calculadora de <span class="grad-text">tarifas</span></h1>
+    <p class="lead">Arma el presupuesto de tu rodaje: equipo por rol y jornada, horas extra, equipos y arriendos, imprevistos y el impuesto según cobres con boleta de honorarios o factura.</p>
+  </section>
+
+  <div class="presets">
+    <span class="lbl">Partir de una plantilla:</span>
+    <button class="chip" data-p="comercial">Comercial 1 día</button>
+    <button class="chip" data-p="videoclip">Videoclip</button>
+    <button class="chip" data-p="corporativo">Video corporativo</button>
+    <button class="chip" data-p="streaming">Streaming de evento</button>
+    <button class="chip" data-p="freelance">Solo yo (freelance)</button>
+    <button class="chip" data-p="vacio"><i data-lucide="eraser" class="icon" style="width:14px;height:14px"></i>En blanco</button>
+  </div>
+
+  <div class="print-only"><h1 id="pTit"></h1><p id="pSub"></p></div>
+
+  <div class="layout">
+    <div>
+      <section class="glass box">
+        <h2><i data-lucide="clipboard-list" class="icon"></i>Proyecto</h2>
+        <div class="fields">
+          <label class="f">Nombre del proyecto<input id="nombre" placeholder="Ej: Spot verano 2027" /></label>
+          <label class="f">Cliente<input id="cliente" placeholder="Ej: Marca o productora" /></label>
+          <label class="f">Fecha de rodaje<input id="fecha" type="date" /></label>
+          <label class="f">Horas por jornada<input id="hJornada" type="number" min="1" max="24" step="1" /></label>
+          <label class="f">Recargo hora extra (%)<input id="recargo" type="number" min="0" max="300" step="5" /></label>
+        </div>
+      </section>
+
+      <section class="glass box crew">
+        <h2><i data-lucide="users" class="icon"></i>Equipo humano<span class="sub" id="subCrew"></span></h2>
+        <div id="crew"></div>
+        <button class="btn btn-ghost add" data-add="crew"><i data-lucide="user-plus" class="icon"></i>Agregar rol</button>
+      </section>
+
+      <section class="glass box gear">
+        <h2><i data-lucide="camera" class="icon"></i>Equipos, arriendos y gastos<span class="sub" id="subGear"></span></h2>
+        <div id="gear"></div>
+        <button class="btn btn-ghost add" data-add="gear"><i data-lucide="plus" class="icon"></i>Agregar ítem</button>
+      </section>
+    </div>
+
+    <aside class="glass resumen">
+      <h2>Resumen</h2>
+      <div class="ln"><span>Equipo humano</span><b id="rCrew"></b></div>
+      <div class="ln"><span>Equipos y gastos</span><b id="rGear"></b></div>
+      <div class="mini">
+        <label class="f">Imprevistos (%)<input id="imprev" type="number" min="0" max="50" step="1" /></label>
+        <label class="f">Margen productora (%)<input id="margen" type="number" min="0" max="100" step="1" /></label>
+      </div>
+      <div class="ln"><span>Imprevistos</span><b id="rImp"></b></div>
+      <div class="ln"><span>Margen</span><b id="rMar"></b></div>
+      <div class="ln sep"><span>Neto</span><b id="rNeto"></b></div>
+
+      <div class="no-print" style="margin-top:12px">
+        <div style="font-size:12px;color:var(--tx3);font-weight:600">Documento tributario</div>
+        <div class="seg" id="doc">
+          <button class="chip" data-d="boleta">Boleta de honorarios</button>
+          <button class="chip" data-d="factura">Factura (IVA)</button>
+          <button class="chip" data-d="exenta">Exenta / sin impuesto</button>
+        </div>
+        <label class="chk" id="liqWrap"><input type="checkbox" id="esLiquido" /><span>Mis tarifas son líquidas (lo que quiero recibir): calcular el bruto de la boleta</span></label>
+      </div>
+      <div id="rImpuestos"></div>
+
+      <div class="acc">
+        <button class="btn btn-main" id="bPdf"><i data-lucide="file-down" class="icon"></i>Descargar PDF</button>
+        <button class="btn btn-ghost" id="bWsp"><i data-lucide="message-circle" class="icon"></i>Enviar por WhatsApp</button>
+        <button class="btn btn-ghost" id="bLink"><i data-lucide="link" class="icon"></i>Copiar enlace al presupuesto</button>
+      </div>
+      <p class="nota">Las tarifas por jornada vienen con <b>valores referenciales de ejemplo</b> para Chile: ajústalas a tu experiencia, al tipo de proyecto y al cliente. Tu presupuesto se guarda en este dispositivo.</p>
+    </aside>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>NOVAUDIOVISUAL · Cálculo referencial. Retención de boleta de honorarios según el calendario de la Ley 21.133; confirma con tu contador.</span>
+    <a href="index.html">Volver al inicio</a>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const icons = () => window.lucide && lucide.createIcons();
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const clp = n => '$' + Math.round(n || 0).toLocaleString('es-CL');
+  const num = v => { const n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; };
+  const KEY = 'nova_tarifas';
+
+  // Valores referenciales por jornada (CLP, bruto). Son un punto de partida editable.
+  const ROLES = [
+    ['Director/a', 450000], ['Productor/a ejecutivo/a', 400000], ['Productor/a', 280000], ['Jefe/a de producción', 220000],
+    ['Asistente de dirección', 200000], ['Asistente de producción', 90000], ['Director/a de fotografía', 350000],
+    ['Camarógrafo/a', 220000], ['Foquista / 1er asistente de cámara', 160000], ['2º asistente de cámara', 110000],
+    ['DIT / data manager', 160000], ['Gaffer', 180000], ['Eléctrico/a', 120000], ['Grip', 120000],
+    ['Sonidista directo', 200000], ['Microfonista', 110000], ['Director/a de arte', 250000], ['Utilero/a', 110000],
+    ['Vestuarista', 150000], ['Maquillaje y peinado', 150000], ['Script / continuista', 130000],
+    ['Piloto de drone', 250000], ['Fotógrafo/a still', 180000], ['Editor/a', 180000], ['Colorista', 250000],
+    ['Motion graphics / VFX', 220000], ['Mezcla de sonido', 200000], ['Operador/a de switcher', 200000],
+    ['Operador/a de streaming', 180000], ['Conductor/a / chofer', 80000], ['Otro rol', 0]
+  ];
+  const TARIFA = Object.fromEntries(ROLES);
+
+  // Retención boleta de honorarios (Ley 21.133): sube cada año hasta 17 % en 2028.
+  const retencion = anio => anio <= 2024 ? 13.75 : anio === 2025 ? 14.5 : anio === 2026 ? 15.25 : anio === 2027 ? 16 : 17;
+
+  const c = (rol, j = 1, he = 0) => ({ rol, j, t: TARIFA[rol] ?? 0, he });
+  const g = (item, cant, d, v) => ({ item, cant, d, v });
+  const PRESETS = {
+    comercial: { crew: [c('Director/a'), c('Productor/a'), c('Director/a de fotografía'), c('Foquista / 1er asistente de cámara'), c('Gaffer'), c('Eléctrico/a'), c('Sonidista directo'), c('Director/a de arte'), c('Maquillaje y peinado'), c('Asistente de producción', 2), c('Editor/a', 3), c('Colorista')],
+                 gear: [g('Kit de cámara cine + lentes', 1, 1, 450000), g('Kit de luces', 1, 1, 250000), g('Kit de sonido', 1, 1, 80000), g('Catering', 14, 1, 12000), g('Transporte', 1, 1, 120000)] },
+    videoclip: { crew: [c('Director/a'), c('Productor/a'), c('Director/a de fotografía'), c('Gaffer'), c('Director/a de arte'), c('Maquillaje y peinado'), c('Asistente de producción'), c('Editor/a', 2), c('Colorista')],
+                 gear: [g('Kit de cámara + lentes', 1, 1, 300000), g('Kit de luces', 1, 1, 180000), g('Locación', 1, 1, 150000), g('Catering', 10, 1, 10000)] },
+    corporativo: { crew: [c('Director/a'), c('Camarógrafo/a'), c('Sonidista directo'), c('Asistente de producción'), c('Editor/a', 2), c('Motion graphics / VFX')],
+                   gear: [g('Kit de cámara', 1, 1, 150000), g('Kit de luces', 1, 1, 90000), g('Micrófonos inalámbricos', 2, 1, 25000), g('Transporte', 1, 1, 60000)] },
+    streaming: { crew: [c('Director/a'), c('Operador/a de switcher'), c('Operador/a de streaming'), c('Camarógrafo/a'), c('Camarógrafo/a'), c('Camarógrafo/a'), c('Sonidista directo'), c('Asistente de producción')],
+                 gear: [g('Cámaras de transmisión', 3, 1, 90000), g('Switcher + grabación', 1, 1, 150000), g('Encoder / enlace a internet', 1, 1, 80000), g('Intercom', 1, 1, 50000), g('Transporte', 1, 1, 80000)] },
+    freelance: { crew: [c('Camarógrafo/a'), c('Editor/a', 2)], gear: [g('Equipo propio de cámara', 1, 1, 80000)] },
+    vacio: { crew: [c('Otro rol')], gear: [] }
+  };
+
+  const BASE = () => ({ nombre:'', cliente:'', fecha:'', hJornada:10, recargo:50, imprev:5, margen:0, doc:'boleta', liq:false, ...JSON.parse(JSON.stringify(PRESETS.comercial)) });
+  let S;
+
+  // Carga: enlace compartido (#p=...) > guardado local > plantilla
+  function cargar(){
+    try {
+      const m = location.hash.match(/^#p=(.+)$/);
+      if (m) return { ...BASE(), ...JSON.parse(decodeURIComponent(escape(atob(m[1].replace(/-/g,'+').replace(/_/g,'/'))))) };
+    } catch (e) {}
+    try { const j = localStorage.getItem(KEY); if (j) return { ...BASE(), ...JSON.parse(j) }; } catch (e) {}
+    return BASE();
+  }
+  const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+  const opcionesRol = sel => (ROLES.some(r => r[0] === sel) ? '' : `<option selected>${esc(sel)}</option>`) +
+    ROLES.map(([r]) => `<option${r === sel ? ' selected' : ''}>${esc(r)}</option>`).join('');
+
+  function pintarFilas(){
+    $('#crew').innerHTML = S.crew.map((r, i) => `<div class="row" data-i="${i}">
+      <label class="f rol"><span>Rol</span><select data-k="rol">${opcionesRol(r.rol)}</select></label>
+      <label class="f"><span>Jornadas</span><input type="number" min="0" step="0.5" data-k="j" value="${r.j}"></label>
+      <label class="f"><span>Tarifa jornada</span><input type="number" min="0" step="5000" data-k="t" value="${r.t}"></label>
+      <label class="f"><span>Horas extra</span><input type="number" min="0" step="0.5" data-k="he" value="${r.he}"></label>
+      <div class="tot" data-tot></div>
+      <button class="del" data-del title="Quitar"><i data-lucide="x" class="icon" style="width:16px;height:16px"></i></button>
+    </div>`).join('') || '<div class="nota">Sin roles todavía.</div>';
+    $('#gear').innerHTML = S.gear.map((r, i) => `<div class="row" data-i="${i}">
+      <label class="f rol"><span>Ítem</span><input data-k="item" value="${esc(r.item)}" placeholder="Ej: Kit de luces"></label>
+      <label class="f"><span>Cantidad</span><input type="number" min="0" step="1" data-k="cant" value="${r.cant}"></label>
+      <label class="f"><span>Días</span><input type="number" min="0" step="0.5" data-k="d" value="${r.d}"></label>
+      <label class="f"><span>Valor unitario/día</span><input type="number" min="0" step="5000" data-k="v" value="${r.v}"></label>
+      <div class="tot" data-tot></div>
+      <button class="del" data-del title="Quitar"><i data-lucide="x" class="icon" style="width:16px;height:16px"></i></button>
+    </div>`).join('') || '<div class="nota">Sin ítems. Agrega arriendos, locaciones, catering, transporte…</div>';
+    icons();
+  }
+
+  const valorHE = r => (num(r.t) / (num(S.hJornada) || 10)) * (1 + num(S.recargo) / 100);
+  const totCrew = r => num(r.j) * num(r.t) + num(r.he) * valorHE(r);
+  const totGear = r => num(r.cant) * (num(r.d) || 1) * num(r.v);
+
+  function calcular(){
+    document.querySelectorAll('#crew .row').forEach(el => { const r = S.crew[el.dataset.i]; el.querySelector('[data-tot]').textContent = clp(totCrew(r)); });
+    document.querySelectorAll('#gear .row').forEach(el => { const r = S.gear[el.dataset.i]; el.querySelector('[data-tot]').textContent = clp(totGear(r)); });
+    const crew = S.crew.reduce((a, r) => a + totCrew(r), 0);
+    const gear = S.gear.reduce((a, r) => a + totGear(r), 0);
+    const base = crew + gear;
+    const imp = base * num(S.imprev) / 100;
+    const mar = (base + imp) * num(S.margen) / 100;
+    const neto = base + imp + mar;
+    const jornadas = S.crew.reduce((a, r) => a + num(r.j), 0);
+    $('#subCrew').textContent = `${S.crew.length} roles · ${jornadas.toLocaleString('es-CL')} jornadas`;
+    $('#subGear').textContent = `${S.gear.length} ítems`;
+    $('#rCrew').textContent = clp(crew); $('#rGear').textContent = clp(gear);
+    $('#rImp').textContent = clp(imp); $('#rMar').textContent = clp(mar);
+    $('#rNeto').textContent = clp(neto);
+
+    document.querySelectorAll('#doc [data-d]').forEach(b => b.classList.toggle('on', b.dataset.d === S.doc));
+    $('#liqWrap').style.display = S.doc === 'boleta' ? '' : 'none';
+    const anio = S.fecha ? +S.fecha.slice(0, 4) : new Date().getFullYear();
+    let html = '', total = neto, recibe = neto;
+    if (S.doc === 'boleta') {
+      const ret = retencion(anio);
+      const bruto = S.liq ? neto / (1 - ret / 100) : neto;
+      total = bruto; recibe = bruto * (1 - ret / 100);
+      html = `<div class="ln"><span>Bruto boleta${S.liq ? ' (calculado)' : ''}</span><b>${clp(bruto)}</b></div>
+        <div class="ln neg"><span>Retención ${ret.toLocaleString('es-CL')} % (${anio})</span><b>−${clp(bruto * ret / 100)}</b></div>
+        <div class="ln sep big"><span>Total a cobrar</span><b>${clp(bruto)}</b></div>
+        <div class="ln liq"><span>Líquido que recibes</span><b>${clp(recibe)}</b></div>`;
+    } else if (S.doc === 'factura') {
+      total = neto * 1.19;
+      html = `<div class="ln"><span>IVA 19 %</span><b>${clp(neto * .19)}</b></div>
+        <div class="ln sep big"><span>Total a cobrar</span><b>${clp(total)}</b></div>`;
+    } else {
+      html = `<div class="ln sep big"><span>Total a cobrar</span><b>${clp(neto)}</b></div>`;
+    }
+    $('#rImpuestos').innerHTML = html;
+    S._total = total; S._neto = neto; S._recibe = recibe;
+    $('#pTit').textContent = 'Presupuesto' + (S.nombre ? ' · ' + S.nombre : '');
+    $('#pSub').textContent = [S.cliente && 'Cliente: ' + S.cliente, S.fecha && 'Rodaje: ' + new Date(S.fecha + 'T12:00').toLocaleDateString('es-CL', { day:'numeric', month:'long', year:'numeric' }), 'Emitido ' + new Date().toLocaleDateString('es-CL')].filter(Boolean).join(' · ');
+    guardar();
+  }
+
+  function pintarTodo(){
+    ['nombre','cliente','fecha','hJornada','recargo','imprev','margen'].forEach(k => $('#' + k).value = S[k] ?? '');
+    $('#esLiquido').checked = !!S.liq;
+    pintarFilas(); calcular();
+  }
+
+  // Edición
+  ['nombre','cliente','fecha','hJornada','recargo','imprev','margen'].forEach(k => $('#' + k).addEventListener('input', e => { S[k] = e.target.value; calcular(); }));
+  $('#esLiquido').addEventListener('change', e => { S.liq = e.target.checked; calcular(); });
+  $('#doc').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (b) { S.doc = b.dataset.d; calcular(); } });
+
+  function enFila(lista){
+    return e => {
+      const row = e.target.closest('.row'); if (!row) return;
+      const i = +row.dataset.i;
+      if (e.type === 'click' && e.target.closest('[data-del]')) { S[lista].splice(i, 1); pintarFilas(); calcular(); return; }
+      const k = e.target.dataset.k; if (!k || e.type === 'click') return;
+      S[lista][i][k] = e.target.value;
+      if (k === 'rol') { S[lista][i].t = TARIFA[e.target.value] ?? 0; row.querySelector('[data-k=t]').value = S[lista][i].t; }
+      calcular();
+    };
+  }
+  ['crew','gear'].forEach(l => { const h = enFila(l); $('#' + l).addEventListener('input', h); $('#' + l).addEventListener('change', h); $('#' + l).addEventListener('click', h); });
+  document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.add === 'crew') S.crew.push(c('Otro rol')); else S.gear.push(g('', 1, 1, 0));
+    pintarFilas(); calcular();
+    const filas = document.querySelectorAll('#' + b.dataset.add + ' .row'); const u = filas[filas.length - 1];
+    u && u.querySelector('select,input').focus();
+  }));
+  document.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => {
+    const p = JSON.parse(JSON.stringify(PRESETS[b.dataset.p]));
+    S.crew = p.crew; S.gear = p.gear;
+    if (b.dataset.p === 'freelance') { S.margen = 0; S.imprev = 0; }
+    pintarTodo(); aviso('Plantilla cargada: ajusta las tarifas a tu proyecto');
+  }));
+
+  // Salidas
+  let tt;
+  function aviso(t){ const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('on'), 2400); }
+  function enlace(){
+    const { _total, _neto, _recibe, ...datos } = S;
+    const b = btoa(unescape(encodeURIComponent(JSON.stringify(datos)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    return location.origin + location.pathname + '#p=' + b;
+  }
+  function texto(){
+    const L = ['🎬 *Presupuesto' + (S.nombre ? ' · ' + S.nombre : '') + '*'];
+    if (S.cliente) L.push('Cliente: ' + S.cliente);
+    if (S.fecha) L.push('Rodaje: ' + new Date(S.fecha + 'T12:00').toLocaleDateString('es-CL', { day:'numeric', month:'long', year:'numeric' }));
+    L.push('', '*Equipo humano*');
+    S.crew.filter(r => totCrew(r) > 0).forEach(r => L.push(`• ${r.rol}: ${num(r.j)} jornada${num(r.j) === 1 ? '' : 's'}${num(r.he) ? ` + ${num(r.he)} h extra` : ''} → ${clp(totCrew(r))}`));
+    const gs = S.gear.filter(r => totGear(r) > 0);
+    if (gs.length) { L.push('', '*Equipos y gastos*'); gs.forEach(r => L.push(`• ${r.item || 'Ítem'}: ${clp(totGear(r))}`)); }
+    L.push('', 'Neto: ' + clp(S._neto));
+    if (S.doc === 'factura') L.push('IVA 19 %: ' + clp(S._neto * .19));
+    if (S.doc === 'boleta') L.push('Boleta de honorarios (bruto)');
+    L.push('*Total: ' + clp(S._total) + '*');
+    return L.join('\n');
+  }
+  $('#bPdf').addEventListener('click', () => window.print());
+  $('#bWsp').addEventListener('click', () => window.open('https://wa.me/?text=' + encodeURIComponent(texto()), '_blank', 'noopener'));
+  $('#bLink').addEventListener('click', () => {
+    const u = enlace();
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => aviso('Enlace copiado: quien lo abra verá este presupuesto'), () => prompt('Copia este enlace:', u));
+  });
+
+  S = cargar();
+  if (location.hash.startsWith('#p=')) { history.replaceState(null, '', location.pathname); setTimeout(() => aviso('Abriste un presupuesto compartido'), 300); }
+  pintarTodo(); icons();
+})();
+</script>
+<script>if('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body>
+</html>

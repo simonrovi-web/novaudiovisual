@@ -20,6 +20,7 @@
     { "name": "Radar de licitaciones", "url": "./novaudiovisual-radar.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Oportunidades públicas", "url": "./novaudiovisual-licitaciones.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Buscar trabajos", "url": "./novaudiovisual-trabajos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Fondos y festivales", "url": "./novaudiovisual-fondos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+    { "name": "Fondos y festivales", "url": "./novaudiovisual-fondos.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Calculadora de tarifas", "url": "./novaudiovisual-tarifas.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }
