@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#09090d" />
+  <meta name="theme-color" content="#262223" />
   <title>NOVAUDIOVISUAL · Calculadora de tarifas</title>
   <meta name="description" content="Arma el presupuesto de tu rodaje: equipo por rol y jornada, horas extra, equipos, imprevistos y boleta de honorarios o factura. Exporta a PDF o compártelo por WhatsApp." />
   <link rel="canonical" href="https://simonrovi-web.github.io/novaudiovisual/novaudiovisual-tarifas.html" />
@@ -29,8 +29,8 @@
   <meta name="twitter:description" content="Arma tu presupuesto audiovisual por rol, jornada y horas extra, con boleta de honorarios o factura." />
   <meta name="twitter:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="nova.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css?v=2" />
   <script src="lucide.min.js"></script>
   <style>
     .hero{padding:44px 0 10px}
@@ -51,7 +51,7 @@
     .row:first-of-type{border-top:0}
     .crew .row{grid-template-columns:minmax(150px,2fr) 80px minmax(110px,1fr) 80px minmax(100px,1fr) 34px}
     .gear .row{grid-template-columns:minmax(150px,2fr) 80px 80px minmax(110px,1fr) minmax(100px,1fr) 34px}
-    .row .tot{font:600 15px 'Space Grotesk'; text-align:right; padding:10px 0; white-space:nowrap}
+    .row .tot{font:600 15px 'Montserrat'; text-align:right; padding:10px 0; white-space:nowrap}
     .row .del{width:34px; height:40px; border-radius:10px; border:1px solid var(--line); background:transparent; color:var(--tx3); cursor:pointer; display:grid; place-items:center}
     .row .del:hover{color:var(--coral); border-color:rgba(255,94,98,.4)}
     .row label.f span{white-space:nowrap}
@@ -63,9 +63,9 @@
     .ln b{color:var(--tx); font-weight:600; white-space:nowrap}
     .ln.sep{border-top:1px solid var(--line); margin-top:6px; padding-top:12px}
     .ln.big{font-size:15px; color:var(--tx)}
-    .ln.big b{font:700 24px 'Space Grotesk'}
+    .ln.big b{font:700 24px 'Montserrat'}
     .ln.neg b{color:#ff9a9c}
-    .ln.liq b{color:#8be3b1; font:700 18px 'Space Grotesk'}
+    .ln.liq b{color:#8be3b1; font:700 18px 'Montserrat'}
     .mini{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0}
     .seg{display:flex; gap:4px; flex-wrap:wrap; margin:4px 0 10px}
     .seg .chip{padding:6px 11px; font-size:12.5px}
@@ -97,7 +97,7 @@
       .ln b,.ln.big b{color:#111}
       .ln.neg b{color:#b00}.ln.liq b{color:#070}
       .print-only{display:block}
-      .print-only h1{font:700 24px 'Space Grotesk'; margin:0 0 4px}
+      .print-only h1{font:700 24px 'Montserrat'; margin:0 0 4px}
       .print-only p{margin:0 0 16px; color:#555; font-size:13px}
       .box,.resumen{break-inside:avoid}
     }
@@ -106,7 +106,7 @@
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="logo"><i data-lucide="clapperboard" class="icon"></i></span><span>NOVAUDIOVISUAL<small>Portal de realizadores</small></span></a>
+    <a class="brand" href="index.html"><img src="logo-nav.webp" alt="NOVA AUDIOVISUAL" width="65" height="48"><small>Portal de realizadores</small></a>
     <span class="rec">REC</span>
     <nav>
       <a href="index.html">Inicio</a>

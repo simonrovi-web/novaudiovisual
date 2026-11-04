@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#09090d" />
+  <meta name="theme-color" content="#262223" />
   <title>NOVAUDIOVISUAL · Portal de realizadores</title>
   <meta name="description" content="NOVAUDIOVISUAL: el portal de los realizadores audiovisuales. Trabajos, fondos, festivales, equipos y comunidad en un solo lugar." />
   <link rel="canonical" href="https://simonrovi-web.github.io/novaudiovisual/" />
@@ -29,35 +29,44 @@
   <meta name="twitter:description" content="NOVAUDIOVISUAL: el portal de los realizadores audiovisuales. Trabajos, fondos, festivales, equipos y comunidad en un solo lugar." />
   <meta name="twitter:image" content="https://simonrovi-web.github.io/novaudiovisual/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="nova.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nova.css?v=2" />
   <script src="lucide.min.js"></script>
   <style>
-    .hero{padding:64px 0 34px; text-align:center}
-    .hero h1{font-size:clamp(40px,8vw,92px); margin:14px 0 8px; font-weight:700; letter-spacing:-.04em; line-height:.95}
-    .hero p{color:var(--tx2); font-size:17px; max-width:600px; margin:0 auto 26px}
-    .quick{display:flex; gap:8px; max-width:620px; margin:0 auto; padding:8px}
+    .hero{padding:46px 0 30px; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:34px; align-items:center}
+    .hero .logo-big{width:100%; max-width:560px; height:auto; display:block; filter:drop-shadow(0 12px 0 var(--ink)) drop-shadow(0 30px 50px rgba(162,77,196,.25)); animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+    @keyframes pop{from{opacity:0; transform:scale(.85) rotate(-4deg)}}
+    .hero h1{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+    .hero .copy h2{font-size:clamp(26px,3.4vw,40px); line-height:1.08; margin:14px 0 12px; font-weight:900}
+    .hero p{color:var(--tx2); font-size:17px; line-height:1.55; max-width:560px; margin:0 0 24px}
+    .quick{display:flex; gap:8px; max-width:560px; padding:7px}
     .quick input{border:0; background:transparent; box-shadow:none!important}
-    .panels{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; margin-top:40px}
-    .panel{position:relative; display:flex; flex-direction:column; gap:10px; padding:20px; border-radius:18px; background:var(--panel); border:1px solid var(--line); text-decoration:none; min-height:170px; transition:all .2s}
-    a.panel:hover{border-color:var(--line2); transform:translateY(-3px); background:var(--panel2)}
-    .panel .ico{width:44px; height:44px; border-radius:13px; display:grid; place-items:center; background:rgba(255,179,71,.1); color:var(--amber)}
-    .panel.live .ico{background:var(--grad); color:#170c12}
+    .sec{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; margin:46px 0 16px}
+    .sec h2{white-space:nowrap}
+    .sec h2{margin:0; font-size:22px; font-weight:900; text-transform:uppercase}
+    .sec span{color:var(--tx3); font-size:14px}
+    .panels{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px}
+    .panel{position:relative; display:flex; flex-direction:column; gap:10px; padding:20px; border-radius:18px; background:var(--panel); border:1.5px solid var(--line); text-decoration:none; min-height:176px; transition:transform .15s, box-shadow .15s, border-color .15s; box-shadow:var(--pop)}
+    a.panel:hover{border-color:var(--gold); transform:translateY(-4px); box-shadow:0 9px 0 var(--ink)}
+    a.panel:active{transform:translateY(2px); box-shadow:0 2px 0 var(--ink)}
+    .panel .ico{width:46px; height:46px; border-radius:13px; display:grid; place-items:center; background:rgba(255,255,255,.05); color:var(--tx3); border:1.5px solid var(--line)}
+    .panel.live .ico{background:var(--grad); color:var(--ink); border:2px solid var(--ink); box-shadow:0 3px 0 var(--ink)}
+    .panel.live:nth-child(even) .ico{background:var(--grad2); color:#fff}
     .panel h3{margin:4px 0 0; font-size:18px}
     .panel p{margin:0; color:var(--tx2); font-size:14px; line-height:1.45}
     .panel .state{position:absolute; top:18px; right:18px}
-    .panel.soon{opacity:.6}
-    .panel.live{border-color:rgba(255,94,98,.35); box-shadow:0 10px 40px rgba(255,94,98,.12)}
+    .panel.soon{opacity:.55; box-shadow:none; border-style:dashed}
+    .panel.live{border-color:rgba(224,184,88,.32)}
+    .spark{color:var(--gold)}
+    @media (max-width:860px){ .hero{grid-template-columns:minmax(0,1fr); text-align:center; gap:14px; padding-top:28px} .hero .logo-big{max-width:400px; margin:0 auto} .hero p,.quick{margin-left:auto; margin-right:auto} }
+    @media (max-width:520px){ .quick{flex-direction:column} .quick .btn{width:100%} }
   </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html">
-      <span class="logo"><i data-lucide="clapperboard" class="icon"></i></span>
-      <span>NOVAUDIOVISUAL<small>Portal de realizadores</small></span>
-    </a>
+    <a class="brand" href="index.html"><img src="logo-nav.webp" alt="NOVA AUDIOVISUAL" width="65" height="48"><small>Portal de realizadores</small></a>
     <span class="rec">REC</span>
     <nav>
       <a href="index.html" class="on">Inicio</a>
@@ -71,15 +80,20 @@
 
 <main class="wrap">
   <section class="hero">
-    <span class="tag cl">Realizadores audiovisuales · Chile</span>
-    <h1><span class="grad-text">NOVA</span>UDIOVISUAL</h1>
-    <p>El portal de quienes hacen cine, televisión, publicidad y contenido. Trabajos, fondos, festivales y comunidad en un solo lugar.</p>
-    <form class="glass quick" action="novaudiovisual-trabajos.html">
-      <input name="q" type="search" placeholder="Busca trabajo: editor, cámara, sonido…" aria-label="Buscar trabajo" />
-      <button class="btn btn-main" type="submit"><i data-lucide="search" class="icon"></i> Buscar</button>
-    </form>
+    <div><img class="logo-big" src="logo-web.webp" alt="NOVA AUDIOVISUAL" width="720" height="532" /></div>
+    <div class="copy">
+      <h1>NOVA AUDIOVISUAL</h1>
+      <span class="tag cl">Realizadores audiovisuales · Chile</span>
+      <h2>Todo lo que necesitas para <span class="grad-text">filmar</span>, <span class="grad-text pu">postular</span> y <span class="grad-text">cobrar</span>.</h2>
+      <p>El portal de quienes hacen cine, televisión, publicidad y contenido. Trabajos, fondos, festivales, licitaciones y herramientas en un solo lugar.</p>
+      <form class="glass quick" action="novaudiovisual-trabajos.html">
+        <input name="q" type="search" placeholder="Busca trabajo: editor, cámara, sonido…" aria-label="Buscar trabajo" />
+        <button class="btn btn-main" type="submit"><i data-lucide="search" class="icon"></i> Buscar</button>
+      </form>
+    </div>
   </section>
 
+  <div class="sec"><h2><span class="spark">✦</span> Paneles</h2><span>Elige por dónde partir</span></div>
   <section class="panels">
     <a class="panel live" href="novaudiovisual-trabajos.html">
       <span class="tag cl state">Activo</span>
