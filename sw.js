@@ -2,10 +2,10 @@
 // Páginas y datos .json: red primero (siempre lo último) y caché si no hay señal.
 // Estáticos y fuentes: caché primero. Subir VERSION en cada cambio de archivos estáticos.
 // La API del radar (otro dominio) nunca pasa por aquí.
-const VERSION = 'nova-v9';
+const VERSION = 'nova-v11';
 const CORE = [
   './', './index.html', './novaudiovisual-trabajos.html', './novaudiovisual-fondos.html', './novaudiovisual-licitaciones.html', './novaudiovisual-tarifas.html', './fondos.json',
-  './nova.css?v=2', './logo-nav.webp', './logo-web.webp', './lucide.min.js', './manifest.json', './icon-192.png', './icon-512.png'
+  './nova.css?v=3', './logo-nav.webp', './logo-web.webp', './install.js', './lucide.min.js', './manifest.json', './icon-192.png', './icon-512.png'
 ];
 
 self.addEventListener('install', e => {

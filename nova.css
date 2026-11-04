@@ -76,6 +76,11 @@ input[type=checkbox],input[type=radio]{accent-color:var(--purple)}
 footer.foot{border-top:2px solid var(--ink); box-shadow:0 -1px 0 rgba(224,184,88,.18); margin-top:60px; padding:28px 0 40px; color:var(--tx3); font-size:13px; background:var(--bg2)}
 footer.foot .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-between}
 
+@media (max-width:1060px){
+  .brand small{display:none}
+  .topbar nav a{padding:8px 9px}
+  .topbar .wrap{gap:10px}
+}
 @media (max-width:720px){
   .topbar nav{display:none}
   .wrap{padding:0 16px}
