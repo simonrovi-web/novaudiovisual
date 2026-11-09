@@ -308,8 +308,8 @@
     pintarTop(); pintarExp(); pintarArriendos();
     const m = D.meta || {};
     const run = (x, t) => x ? `${t}: ${new Date(x.fecha).toLocaleString('es-CL')} · revisadas ${x.revisadas ?? x.total} · avisadas ${x.avisadas ?? x.agregados}` : `${t}: sin corridas aún`;
-    const pc = m.pc ? `💻 Tu PC (Compra Ágil): último envío ${new Date(m.pc.fecha).toLocaleString('es-CL')}` : '💻 Tu PC (Compra Ágil): sin envíos aún';
-    $('#runs').innerHTML = [run(m.lic,'🎬 Licitaciones'), run(m.ca,'⚡ Compra Ágil'), run(m.hist,'💡 Precios'), pc].map(esc).join('<br>');
+    const pc = m.pc ? `💻 Tu PC (Compra Ágil): última pasada ${new Date(m.pc.fecha).toLocaleString('es-CL')}` : '💻 Tu PC (Compra Ágil): sin envíos aún';
+    $('#runs').innerHTML = [run(m.lic,'🎬 Licitaciones'), run(m.ca,'⚡ Compra Ágil'), run(m.hist,'💡 Precios'), pc, estadoApiCA(m.caapi)].filter(Boolean).map(esc).join('<br>');
   }
 
   /* Postulaciones */
@@ -475,6 +475,14 @@
     catch { toast('No se pudo guardar. Revisa tu conexión.'); }
   });
 
+  // Estado de la API de Compra Ágil de ChileCompra (lo reporta el PC en cada pasada)
+  function estadoApiCA(a){
+    if (!a) return '';
+    if (a.estado === 'ok') return `🟢 API Compra Ágil de ChileCompra: funcionando (última respuesta ${new Date(a.ultimaOk).toLocaleString('es-CL')})`;
+    const h = Math.round((Date.now() - new Date(a.desde)) / 36e5);
+    return `🔴 API Compra Ágil de ChileCompra: caída hace ~${h} h (desde ${new Date(a.desde).toLocaleString('es-CL')}). No es falla del radar; revisa a mano en buscador.mercadopublico.cl/compra-agil`;
+  }
+
   /* Sistema */
   function pintarSistema(){
     const s = D.salud || { uso: [], errores: [], limite: 1000 };
@@ -483,7 +491,9 @@
     $('#usoKpis').innerHTML = [
       [`${hoy} / ${s.limite}`, 'escrituras hoy (aprox.)'],
       [s.errores.length ? new Date(s.errores[0].fecha).toLocaleDateString('es-CL') : '—', 'último error'],
-      [pc === null ? '—' : pc < 24 ? 'OK' : `${pc} h`, 'tu PC (Compra Ágil): último envío'],
+      [pc === null ? '—' : pc < 24 ? 'OK' : `${pc} h`, 'tu PC (Compra Ágil): última pasada'],
+      [!D.meta?.caapi ? '—' : D.meta.caapi.estado === 'ok' ? '🟢 OK' : `🔴 ${Math.round((Date.now() - new Date(D.meta.caapi.desde)) / 36e5)} h`, 'API Compra Ágil (ChileCompra)'],
+      [D.meta?.lic ? (Date.now() - new Date(D.meta.lic.fecha) < 864e5 ? '🟢 OK' : '🔴 atrasada') : '—', 'licitaciones (nube)'],
     ].map(([n,t]) => `<div class="glass kpi"><div class="n">${esc(n)}</div><div class="t">${esc(t)}</div></div>`).join('');
     $('#usoBarras').innerHTML = s.uso.slice().reverse().map(u => `<div style="display:grid;grid-template-columns:92px 1fr 52px;gap:8px;align-items:center;font-size:12.5px">
       <span style="color:var(--tx3)">${esc(u.dia)}</span><span style="height:10px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden"><span style="display:block;height:100%;width:${Math.min(100, u.escrituras / s.limite * 100)}%;background:${u.escrituras > s.limite * .8 ? 'var(--rec)' : 'var(--grad)'}"></span></span><span style="text-align:right">${u.escrituras}</span></div>`).join('');
