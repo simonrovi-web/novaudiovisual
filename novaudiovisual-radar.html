@@ -326,7 +326,7 @@
     $('#paqs').innerHTML = xs.length ? xs.map(p => {
       const res = p.estado === 'perdida' && p.ganador ? `<p>Ganó <b>${esc(p.ganador)}</b> con ${pesos(p.montoGanador)}${p.ofertas ? ` (${p.ofertas} ofertas)` : ''}.</p>` : '';
       const acts = p.estado === 'preparado'
-        ? `<button class="btn btn-main" data-post="${esc(p.codigo)}" data-neto="${p.sugerido || ''}">✅ Postulé</button><button class="btn btn-ghost" data-nopost="${esc(p.codigo)}">No postulé</button>`
+        ? `<button class="btn btn-main" data-post="${esc(p.codigo)}" data-neto="${p.sugerido || ''}">✅ Postulé</button>${selMotivo(p.codigo).replace('👎 Descartar…', 'No postulé porque…')}`
         : p.estado === 'postulado' ? `<button class="btn btn-ghost" data-post="${esc(p.codigo)}" data-neto="${p.miNeto || ''}">Cambiar monto</button>`
         : p.estado === 'ganada' ? btnCostos(p) + lineaMargen(p, p.miNeto) : '';
       return `<article class="op">
@@ -563,15 +563,24 @@
   /* Preferencias */
   const REGIONES = ['Arica y Parinacota','Tarapacá','Antofagasta','Atacama','Coquimbo','Valparaíso','Metropolitana',"O'Higgins",'Maule','Ñuble','Biobío','Araucanía','Los Ríos','Los Lagos','Aysén','Magallanes'];
   function pintarPrefs(){
-    const p = D.prefs || { regiones: [], montoMin: 0, excluir: '' };
+    const p = D.prefs || { regiones: [], montoMin: 0, excluir: '', terreno: [] };
+    const terreno = p.terreno?.length ? p.terreno : p.regiones?.length ? p.regiones : ['Metropolitana'];
+    const a = D.aprendizaje || { cuenta: {}, regionesLejos: [], montoMin: 0 };
+    const cuenta = Object.entries(a.cuenta || {}).map(([k,n]) => `${esc((D.motivos || {})[k] || k)}: ${n}`).join(' · ');
     $('#prefs').innerHTML = `<h3 style="margin:0">Preferencias de avisos</h3>
       <label>Regiones donde trabajas<span>Si no marcas ninguna, te aviso de todo Chile.</span>
         <div class="regiones">${REGIONES.map(r => `<label><input type="checkbox" name="regiones" value="${esc(r)}" ${p.regiones.includes(r) ? 'checked' : ''}>${esc(r)}</label>`).join('')}</div></label>
-      <label>Monto mínimo (pesos)<span>No te aviso de compras con presupuesto menor. 0 = sin mínimo.</span><input name="montoMin" type="number" min="0" step="10000" value="${p.montoMin || 0}"></label>
+      <label>Regiones donde vas a terreno<span>Fuera de ellas, lo que hay que grabar en persona baja a "quizás". Lo que se hace a distancia (edición, animación) se avisa igual de todo Chile.</span>
+        <div class="regiones">${REGIONES.map(r => `<label><input type="checkbox" name="terreno" value="${esc(r)}" ${terreno.includes(r) ? 'checked' : ''}>${esc(r)}</label>`).join('')}</div></label>
+      <label>Monto mínimo (pesos)<span>No te aviso de compras con presupuesto menor. 0 = sin mínimo.${a.montoMin ? ` Sugerencia según lo que descartaste por poca plata: ${a.montoMin.toLocaleString('es-CL')}.` : ''}</span><input name="montoMin" type="number" min="0" step="10000" value="${p.montoMin || 0}"></label>
       <label>Palabras que no quieres ver<span>Separadas por coma. Ej.: amplificación, pantalla led, arriendo</span><input name="excluir" value="${esc(p.excluir)}"></label>
+      ${cuenta ? `<p style="margin:0;color:var(--tx3);font-size:13px">Lo que el radar aprendió de tus descartes: ${cuenta}${a.regionesLejos.length ? `. Descartaste por lejanía varias veces: ${a.regionesLejos.map(esc).join(', ')}` : ''}.</p>` : ''}
       <div><button class="btn btn-main" type="submit"><i data-lucide="sliders-horizontal" class="icon"></i>Guardar preferencias</button></div>`;
     icons();
   }
+
+  // Selector "Descartar porque…": el motivo le enseña al radar (misma lista que los botones de Telegram)
+  const selMotivo = c => `<select class="btn btn-ghost" data-motivo="${esc(c)}" style="padding:8px 10px"><option value="">👎 Descartar…</option>${Object.entries(D.motivos || {}).map(([k,t]) => `<option value="${k}">${esc(t)}</option>`).join('')}</select>`;
 
   /* Oportunidades */
   const FILTROS = [['abiertas','Abiertas'],['ca','⚡ Compra Ágil'],['lic','🎬 Licitaciones'],['sigo','★ Siguiendo'],['todas','Todas']];
@@ -594,6 +603,8 @@
         <div class="org">${esc(o.o)}${o.r ? ' · ' + esc(o.r) : ''}</div>
         <div class="meta"><span><b>${esc(o.m)}</b></span><span>${cuando}</span></div>
         ${o.res ? `<p>${esc(o.res)}</p>` : ''}
+        ${o.mod === 'remoto' ? '<p>🖥 Se puede hacer a distancia</p>' : o.lejos ? `<p>📍 En terreno fuera de tus regiones (calce rebajado)</p>` : ''}
+        ${o.exp ? '<p>📜 Piden experiencia acreditada: usa un certificado de cliente privado (pestaña Experiencia)</p>' : ''}
         ${o.req ? `<p>⚠️ ${esc(o.req)}</p>` : ''}
         ${o.ref ? `<div class="ref">💡 ${esc(o.ref)}</div>` : ''}
         <div class="acts">
@@ -602,6 +613,7 @@
           <button class="btn btn-ghost" data-detalle="${esc(o.c)}"><i data-lucide="clipboard-list" class="icon"></i>Detalles</button>
           <button class="btn btn-ghost" data-borrador="${esc(o.c)}"><i data-lucide="file-text" class="icon"></i>Borrador</button>
           <button class="btn btn-main" data-postular="${esc(o.c)}"><i data-lucide="rocket" class="icon"></i>Postular</button>
+          ${h > 0 ? selMotivo(o.c) : ''}
         </div>
       </article>`;
     }).join('') : `<div class="glass empty">Nada por aquí todavía. En Telegram, escribe /ahora para buscar.</div>`;
@@ -720,6 +732,16 @@
       if (no) { await call('/postulacion', 'POST', { codigo: no.dataset.nopost, estado: 'descartado' }); D = await call('/panel'); pintar(); toast('Anotado'); }
     } catch { toast('No se pudo. Revisa tu conexión.'); }
   });
+  // Descartar con motivo (en Oportunidades y en Mis postulaciones)
+  document.addEventListener('change', async e => {
+    const sel = e.target.closest('[data-motivo]');
+    if (!sel || !sel.value) return;
+    try {
+      await call('/postulacion', 'POST', { codigo: sel.dataset.motivo, estado: 'descartado', motivo: sel.value });
+      D = await call('/panel'); D.ops = D.ops.filter(o => o.c !== sel.dataset.motivo); pintar();
+      toast('👎 Anotado con su motivo: el radar lo toma en cuenta');
+    } catch { toast('No se pudo. Revisa tu conexión.'); sel.value = ''; }
+  });
   $('#ocs').addEventListener('click', async e => {
     const b = e.target.closest('[data-oc]'); if (!b) return;
     try { await call('/oc', 'POST', { codigo: b.dataset.oc, accion: b.dataset.acc }); D = await call('/panel'); pintar(); toast(b.dataset.acc === 'pago' ? '💵 Marcada como pagada' : '🧾 Anotado: si no pagan en 30 días te aviso'); }
@@ -777,7 +799,7 @@
   $('#prefs').addEventListener('submit', async e => {
     e.preventDefault();
     const f = new FormData(e.target);
-    const datos = { regiones: f.getAll('regiones'), montoMin: Number(f.get('montoMin')) || 0, excluir: f.get('excluir') || '' };
+    const datos = { regiones: f.getAll('regiones'), terreno: f.getAll('terreno'), montoMin: Number(f.get('montoMin')) || 0, excluir: f.get('excluir') || '' };
     try { const r = await call('/prefs', 'PUT', datos); D.prefs = r.prefs; toast('✅ Preferencias guardadas: se aplican desde la próxima ronda'); }
     catch { toast('No se pudo guardar. Revisa tu conexión.'); }
   });
